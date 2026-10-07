@@ -1,3 +1,4 @@
+import os
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify, Response
 import pymysql
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -11,13 +12,16 @@ app = Flask(__name__)
 app.secret_key = 'floraflow2024'
 
 db_config = {
-    'host': 'localhost',
-    'user': 'root',
-    'password': '',
-    'database': 'floraflowdb',
+    'host': os.environ.get('DB_HOST', 'localhost'),
+    'user': os.environ.get('DB_USER', 'root'),
+    'password': os.environ.get('DB_PASSWORD', ''),
+    'database': os.environ.get('DB_NAME', 'floraflowdb'),
     'cursorclass': pymysql.cursors.DictCursor
 }
 
+# TiDB Cloud typically requires SSL for external connections
+if os.environ.get('DB_HOST') and 'tidbcloud' in os.environ.get('DB_HOST'):
+    db_config['ssl'] = {'ca': 'ca.pem'} # uses the ca.pem in your project folder
 
 def getDbConnection():
     conn = pymysql.connect(**db_config)
@@ -1857,3 +1861,7 @@ def attendancePdf():
 if __name__ == '__main__':
     hashAllPasswords()
     app.run(debug=True)
+
+# This tells Flask to look for 'ca.pem' in the exact same folder as app.py
+cert_path = os.path.join(os.path.dirname(__file__), 'ca.pem')
+app.config['MYSQL_SSL_CA'] = cert_path
