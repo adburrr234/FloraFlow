@@ -185,6 +185,17 @@ def debug():
     env_vars = {k: str(v) for k, v in request.environ.items()}
     return jsonify(env_vars)
 
+@app.errorhandler(404)
+def page_not_found(e):
+    import json
+    return jsonify({
+        "error": "404 - Flask could not match the route",
+        "path_info": request.environ.get("PATH_INFO"),
+        "script_name": request.environ.get("SCRIPT_NAME"),
+        "raw_uri": request.environ.get("REQUEST_URI"),
+        "url_map": str(app.url_map)
+    }), 404
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
