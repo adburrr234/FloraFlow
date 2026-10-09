@@ -20,11 +20,6 @@ def home():
     return redirect('/login')
 
 
-@app.route('/')
-def home():
-    return "FloraFlow is running"
-
-
 @app.route('/dbtest')
 def dbtest():
     try:
@@ -40,11 +35,12 @@ def dbtest():
 
 
 db_config = {
-    'host': 'localhost',
-    'user': 'root',
-    'password': '',
-    'database': 'floraflowdb',
-    'cursorclass': pymysql.cursors.DictCursor
+    "host": os.environ["DB_HOST"],
+    "port": int(os.environ.get("DB_PORT", 4000)),
+    "user": os.environ["DB_USER"],
+    "password": os.environ["DB_PASSWORD"],
+    "database": os.environ.get("DB_NAME", "floraflowdb"),
+    "ssl": {"ca": "/etc/ssl/certs/ca-certificates.crt"},
 }
 
 
