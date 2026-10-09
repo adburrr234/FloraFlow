@@ -11,7 +11,7 @@ from io import BytesIO
 from fpdf import FPDF
 import calendar
 from dotenv import load_dotenv
-load_dotenv()
+load_dotenv('text.env')
 
 
 app = Flask(__name__)
@@ -59,11 +59,11 @@ def dbtest():
 
 
 db_config = {
-    "host": os.environ.get("DB_HOST", ""),
-    "port": int(os.environ.get("DB_PORT", 4000)),
-    "user": os.environ.get("DB_USER", ""),
-    "password": os.environ.get("DB_PASSWORD", ""),
-    "database": os.environ.get("DB_NAME", "floraflowdb"),
+    "host": "gateway01.ap-southeast-1.prod.aws.tidbcloud.com",
+    "port": 4000,
+    "user": "AL5zvKFqvMKaPgQ.root",
+    "password": "rFt0P8YzPPzDxsFW",
+    "database": "floraflowdb",
     "ssl": {"ca": "ca.pem"},
     "cursorclass": pymysql.cursors.DictCursor,
 }
