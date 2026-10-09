@@ -18,11 +18,6 @@ app = Flask(__name__)
 app.secret_key = 'floraflow2024'
 
 
-@app.route('/')
-def home():
-    return redirect('/login')
-
-
 @app.route('/dbtest')
 def dbtest():
     try:
