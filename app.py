@@ -17,7 +17,7 @@ app.secret_key = 'floraflow2024'
 
 @app.route('/')
 def home():
-    return redirect(url_for('login'))
+    return redirect('/login')
 
 
 db_config = {
