@@ -20,6 +20,11 @@ def home():
     return redirect('/login')
 
 
+@app.route('/')
+def home():
+    return "FloraFlow is running"
+
+
 db_config = {
     'host': 'localhost',
     'user': 'root',
