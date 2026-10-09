@@ -22,21 +22,23 @@ class VercelRewriteFix(object):
         self.app = app
 
     def __call__(self, environ, start_response):
-        # Vercel's routing sometimes prepends the script name to PATH_INFO
+        # Fix PATH_INFO
         path_info = environ.get('PATH_INFO', '')
         if path_info.startswith('/app.py'):
             environ['PATH_INFO'] = path_info.replace('/app.py', '', 1) or '/'
-            environ['SCRIPT_NAME'] = ''
         elif path_info.startswith('app.py'):
             environ['PATH_INFO'] = path_info.replace('app.py', '', 1) or '/'
-            environ['SCRIPT_NAME'] = ''
-        elif path_info.startswith('/api/index.py'):
-            environ['PATH_INFO'] = path_info.replace('/api/index.py', '', 1) or '/'
-            environ['SCRIPT_NAME'] = ''
-        elif path_info.startswith('/api/index'):
-            environ['PATH_INFO'] = path_info.replace('/api/index', '', 1) or '/'
-            environ['SCRIPT_NAME'] = ''
             
+        # Werkzeug 3.0+ uses REQUEST_URI or RAW_URI for routing if PATH_INFO is considered modified
+        for key in ['REQUEST_URI', 'RAW_URI', 'HTTP_X_ORIGINAL_URL', 'UNENCODED_URL']:
+            if key in environ:
+                val = environ[key]
+                if val.startswith('/app.py'):
+                    environ[key] = val.replace('/app.py', '', 1) or '/'
+                elif val.startswith('app.py'):
+                    environ[key] = val.replace('app.py', '', 1) or '/'
+                    
+        environ['SCRIPT_NAME'] = ''
         return self.app(environ, start_response)
 
 app.wsgi_app = VercelRewriteFix(app.wsgi_app)
