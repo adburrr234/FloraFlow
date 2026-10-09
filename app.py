@@ -17,6 +17,24 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = 'floraflow2024'
 
+class VercelRewriteFix(object):
+    def __init__(self, app):
+        self.app = app
+
+    def __call__(self, environ, start_response):
+        # Vercel's routing sometimes prepends the script name to PATH_INFO
+        path_info = environ.get('PATH_INFO', '')
+        if path_info.startswith('/app.py'):
+            environ['PATH_INFO'] = path_info.replace('/app.py', '', 1) or '/'
+            environ['SCRIPT_NAME'] = ''
+        elif path_info.startswith('/api/index.py'):
+            environ['PATH_INFO'] = path_info.replace('/api/index.py', '', 1) or '/'
+            environ['SCRIPT_NAME'] = ''
+            
+        return self.app(environ, start_response)
+
+app.wsgi_app = VercelRewriteFix(app.wsgi_app)
+
 
 @app.route('/dbtest')
 def dbtest():
