@@ -51,10 +51,10 @@ def dbtest():
 
 
 db_config = {
-    "host": os.environ["DB_HOST"],
+    "host": os.environ.get("DB_HOST", ""),
     "port": int(os.environ.get("DB_PORT", 4000)),
-    "user": os.environ["DB_USER"],
-    "password": os.environ["DB_PASSWORD"],
+    "user": os.environ.get("DB_USER", ""),
+    "password": os.environ.get("DB_PASSWORD", ""),
     "database": os.environ.get("DB_NAME", "floraflowdb"),
     "ssl": {"ca": "ca.pem"},
     "cursorclass": pymysql.cursors.DictCursor,
