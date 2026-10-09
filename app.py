@@ -4,6 +4,7 @@ from flask import Flask, redirect, url_for
 import os
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify, Response
 import pymysql
+import pymysql.cursors
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import date, timedelta
 from io import BytesIO
@@ -42,7 +43,8 @@ db_config = {
     "user": os.environ["DB_USER"],
     "password": os.environ["DB_PASSWORD"],
     "database": os.environ.get("DB_NAME", "floraflowdb"),
-    "ssl": {"ca": "/etc/ssl/certs/ca-certificates.crt"},
+    "ssl": {"ca": "ca.pem"},
+    "cursorclass": pymysql.cursors.DictCursor,
 }
 
 
