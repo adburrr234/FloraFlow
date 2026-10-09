@@ -9,6 +9,8 @@ from datetime import date, timedelta
 from io import BytesIO
 from fpdf import FPDF
 import calendar
+from dotenv import load_dotenv
+load_dotenv()
 
 
 app = Flask(__name__)
