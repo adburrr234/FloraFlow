@@ -25,6 +25,20 @@ def home():
     return "FloraFlow is running"
 
 
+@app.route('/dbtest')
+def dbtest():
+    try:
+        # use your own connection function
+        conn = pymysql.connect(**db_config)
+        cur = conn.cursor()
+        cur.execute("SELECT COUNT(*) FROM PlantCategories")
+        count = cur.fetchone()[0]
+        conn.close()
+        return f"DB connected. Categories: {count}"
+    except Exception as e:
+        return f"DB error: {e}", 500
+
+
 db_config = {
     'host': 'localhost',
     'user': 'root',
