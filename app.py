@@ -179,6 +179,12 @@ def index():
     return redirect(url_for('login'))
 
 
+@app.route('/debug')
+def debug():
+    import json
+    env_vars = {k: str(v) for k, v in request.environ.items()}
+    return jsonify(env_vars)
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
