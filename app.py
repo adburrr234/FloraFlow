@@ -1931,11 +1931,7 @@ app.config['MYSQL_SSL_CA'] = cert_path
 
 
 # app.py
-# Import the functions from your new file
-
-app = Flask(__name__)
-
-# Function to get your TiDB Cloud connection
+# Import the functions from your new file# Function to get your TiDB Cloud connection
 
 
 def get_db_connection():
