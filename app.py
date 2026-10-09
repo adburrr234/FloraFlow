@@ -27,6 +27,9 @@ class VercelRewriteFix(object):
         if path_info.startswith('/app.py'):
             environ['PATH_INFO'] = path_info.replace('/app.py', '', 1) or '/'
             environ['SCRIPT_NAME'] = ''
+        elif path_info.startswith('app.py'):
+            environ['PATH_INFO'] = path_info.replace('app.py', '', 1) or '/'
+            environ['SCRIPT_NAME'] = ''
         elif path_info.startswith('/api/index.py'):
             environ['PATH_INFO'] = path_info.replace('/api/index.py', '', 1) or '/'
             environ['SCRIPT_NAME'] = ''
