@@ -12,16 +12,13 @@ app = Flask(__name__)
 app.secret_key = 'floraflow2024'
 
 db_config = {
-    'host': os.environ.get('DB_HOST', 'localhost'),
-    'user': os.environ.get('DB_USER', 'root'),
-    'password': os.environ.get('DB_PASSWORD', ''),
-    'database': os.environ.get('DB_NAME', 'floraflowdb'),
+    'host': 'localhost',
+    'user': 'root',
+    'password': '',
+    'database': 'floraflowdb',
     'cursorclass': pymysql.cursors.DictCursor
 }
 
-# TiDB Cloud typically requires SSL for external connections
-if os.environ.get('DB_HOST') and 'tidbcloud' in os.environ.get('DB_HOST'):
-    db_config['ssl'] = {'ca': 'ca.pem'} # uses the ca.pem in your project folder
 
 def getDbConnection():
     conn = pymysql.connect(**db_config)
