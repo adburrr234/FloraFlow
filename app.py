@@ -1862,3 +1862,47 @@ if __name__ == '__main__':
 # This tells Flask to look for 'ca.pem' in the exact same folder as app.py
 cert_path = os.path.join(os.path.dirname(__file__), 'ca.pem')
 app.config['MYSQL_SSL_CA'] = cert_path
+
+
+# app.py
+from flask import Flask, request, jsonify
+import pymysql
+# Import the functions from your new file
+from transactions import process_plant_sale, process_plant_purchase, process_accessory_purchase
+
+app = Flask(__name__)
+
+# Function to get your TiDB Cloud connection
+def get_db_connection():
+    return pymysql.connect(
+        host='your_tidb_host',
+        user='your_user',
+        password='your_password',
+        database='floraflowdb',
+        cursorclass=pymysql.cursors.DictCursor
+    )
+
+@app.route('/api/sales', methods=['POST'])
+def add_sale():
+    data = request.json
+    connection = get_db_connection()
+
+    # Pass the connection and data to the transaction function
+    success = process_plant_sale(
+        connection=connection,
+        sale_id=data['sale_id'],
+        plant_id=data['plant_id'],
+        quantity=data['quantity'],
+        price=data['price']
+    )
+    
+    # Always close the connection after the transaction is done
+    connection.close()
+    
+    if success:
+        return jsonify({"message": "Sale recorded and inventory updated!"}), 200
+    else:
+        return jsonify({"error": "Transaction failed, inventory was not changed."}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True)
