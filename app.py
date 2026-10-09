@@ -1971,5 +1971,15 @@ def add_sale():
         return jsonify({"error": "Transaction failed, inventory was not changed."}), 500
 
 
+@app.route('/<path:path>')
+def catch_all_fallback(path):
+    import json
+    env = {k: str(v) for k, v in request.environ.items() if isinstance(v, (str, int, float, bool))}
+    return app.response_class(
+        response=json.dumps(env, indent=4),
+        status=200,
+        mimetype='application/json'
+    )
+
 if __name__ == '__main__':
     app.run(debug=True)
