@@ -1022,7 +1022,7 @@ def purchaseDetail(purchaseId):
     finally:
         conn.close()
 
-    return render_template('purchaseDetail.html',
+    return render_template('Purchasedetail.html',
                            purchase=purchase,
                            purchaseItems=purchaseItems,
                            unreadAlerts=unreadAlerts)
