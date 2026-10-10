@@ -1114,66 +1114,70 @@ def addStaff():
 
 @app.route('/editStaff/<int:staffId>', methods=['GET', 'POST'])
 def editStaff(staffId):
-    if 'staffId' not in session or session['role'] != 'admin':
-        return redirect(url_for('login'))
-
-    conn = getDbConnection()
+    import traceback
     try:
-        cursor = conn.cursor()
+        if 'staffId' not in session or session['role'] != 'admin':
+            return redirect(url_for('login'))
 
-        if request.method == 'POST':
-            fullName = request.form['fullName'].strip()
-            role = request.form['role']
-            designation = request.form.get('designation', '').strip()
-            salary = request.form.get('salary') or None
-            phone = request.form.get('phone', '').strip()
-            email = request.form.get('email', '').strip()
-            hireDate = request.form['hireDate']
+        conn = getDbConnection()
+        try:
+            cursor = conn.cursor()
 
-            if staffId == session['staffId'] and role != 'admin':
-                flash('You cannot demote your own admin account.', 'danger')
-                return redirect(url_for('editStaff', staffId=staffId))
+            if request.method == 'POST':
+                fullName = request.form['fullName'].strip()
+                role = request.form['role']
+                designation = request.form.get('designation', '').strip()
+                salary = request.form.get('salary') or None
+                phone = request.form.get('phone', '').strip()
+                email = request.form.get('email', '').strip()
+                hireDate = request.form['hireDate']
 
-            try:
-                if not hireDate:
-                    flash('Hire date is required.', 'danger')
+                if staffId == session['staffId'] and role != 'admin':
+                    flash('You cannot demote your own admin account.', 'danger')
                     return redirect(url_for('editStaff', staffId=staffId))
-                    
-                cursor.execute("""
-                    UPDATE Staff
-                    SET fullName=%s, role=%s, designation=%s, salary=%s,
-                        phone=%s, email=%s, hireDate=%s
-                    WHERE staffId=%s
-                """, (fullName, role, designation, salary, phone, email,
-                      hireDate, staffId))
-                conn.commit()
-                flash('Staff details updated successfully.', 'success')
+
+                try:
+                    if not hireDate:
+                        flash('Hire date is required.', 'danger')
+                        return redirect(url_for('editStaff', staffId=staffId))
+                        
+                    cursor.execute("""
+                        UPDATE Staff
+                        SET fullName=%s, role=%s, designation=%s, salary=%s,
+                            phone=%s, email=%s, hireDate=%s
+                        WHERE staffId=%s
+                    """, (fullName, role, designation, salary, phone, email,
+                          hireDate, staffId))
+                    conn.commit()
+                    flash('Staff details updated successfully.', 'success')
+                    return redirect(url_for('staff'))
+                except pymysql.err.OperationalError as e:
+                    flash(f'Invalid data format (e.g. check if salary has commas): {e.args[1]}', 'danger')
+                    return redirect(url_for('editStaff', staffId=staffId))
+                except Exception as e:
+                    flash(f'Error updating staff: {str(e)}', 'danger')
+                    return redirect(url_for('editStaff', staffId=staffId))
+
+            cursor.execute("SELECT * FROM Staff WHERE staffId = %s", (staffId,))
+            staffMember = cursor.fetchone()
+
+            if not staffMember:
+                flash('Staff member not found.', 'danger')
                 return redirect(url_for('staff'))
-            except pymysql.err.OperationalError as e:
-                flash(f'Invalid data format (e.g. check if salary has commas): {e.args[1]}', 'danger')
-                return redirect(url_for('editStaff', staffId=staffId))
-            except Exception as e:
-                flash(f'Error updating staff: {str(e)}', 'danger')
-                return redirect(url_for('editStaff', staffId=staffId))
 
-        cursor.execute("SELECT * FROM Staff WHERE staffId = %s", (staffId,))
-        staffMember = cursor.fetchone()
+            cursor.execute(
+                "SELECT COUNT(*) AS total FROM SystemAlerts WHERE isRead = 0")
+            unreadAlerts = cursor.fetchone()['total']
 
-        if not staffMember:
-            flash('Staff member not found.', 'danger')
-            return redirect(url_for('staff'))
+        finally:
+            conn.close()
 
-        cursor.execute(
-            "SELECT COUNT(*) AS total FROM SystemAlerts WHERE isRead = 0")
-        unreadAlerts = cursor.fetchone()['total']
-
-    finally:
-        conn.close()
-
-    return render_template('editStaff.html',
-                           staffMember=staffMember,
-                           unreadAlerts=unreadAlerts,
-                           currentStaffId=session['staffId'])
+        return render_template('editStaff.html',
+                               staffMember=staffMember,
+                               unreadAlerts=unreadAlerts,
+                               currentStaffId=session['staffId'])
+    except Exception as e:
+        return f"<pre>{traceback.format_exc()}</pre>", 500
 
 
 @app.route('/toggleStaff/<int:staffId>')
