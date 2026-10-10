@@ -1172,7 +1172,7 @@ def editStaff(staffId):
         finally:
             conn.close()
 
-        return render_template('editStaff.html',
+        return render_template('editstaff.html',
                                staffMember=staffMember,
                                unreadAlerts=unreadAlerts,
                                currentStaffId=session['staffId'])
