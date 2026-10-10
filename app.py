@@ -1134,16 +1134,27 @@ def editStaff(staffId):
                 flash('You cannot demote your own admin account.', 'danger')
                 return redirect(url_for('editStaff', staffId=staffId))
 
-            cursor.execute("""
-                UPDATE Staff
-                SET fullName=%s, role=%s, designation=%s, salary=%s,
-                    phone=%s, email=%s, hireDate=%s
-                WHERE staffId=%s
-            """, (fullName, role, designation, salary, phone, email,
-                  hireDate, staffId))
-            conn.commit()
-            flash('Staff details updated successfully.', 'success')
-            return redirect(url_for('staff'))
+            try:
+                if not hireDate:
+                    flash('Hire date is required.', 'danger')
+                    return redirect(url_for('editStaff', staffId=staffId))
+                    
+                cursor.execute("""
+                    UPDATE Staff
+                    SET fullName=%s, role=%s, designation=%s, salary=%s,
+                        phone=%s, email=%s, hireDate=%s
+                    WHERE staffId=%s
+                """, (fullName, role, designation, salary, phone, email,
+                      hireDate, staffId))
+                conn.commit()
+                flash('Staff details updated successfully.', 'success')
+                return redirect(url_for('staff'))
+            except pymysql.err.OperationalError as e:
+                flash(f'Invalid data format (e.g. check if salary has commas): {e.args[1]}', 'danger')
+                return redirect(url_for('editStaff', staffId=staffId))
+            except Exception as e:
+                flash(f'Error updating staff: {str(e)}', 'danger')
+                return redirect(url_for('editStaff', staffId=staffId))
 
         cursor.execute("SELECT * FROM Staff WHERE staffId = %s", (staffId,))
         staffMember = cursor.fetchone()
