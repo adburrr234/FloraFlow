@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FloraFlow — {% block title %}{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
@@ -10,6 +11,7 @@
         body {
             background: #f0f7f4;
             font-family: 'Segoe UI', sans-serif;
+            overflow-x: hidden;
         }
 
         .sidebar {
@@ -18,6 +20,8 @@
             padding: 20px 0;
             position: fixed;
             width: 220px;
+            transition: transform 0.3s ease;
+            z-index: 1050;
         }
 
         .sidebar .logoText {
@@ -50,6 +54,7 @@
         .mainContent {
             margin-left: 220px;
             padding: 30px;
+            transition: margin-left 0.3s ease;
         }
 
         .topBar {
@@ -122,21 +127,64 @@
             color: #40916c;
         }
 
-            {
-
-
-            % block extraStyles %
+        /* Responsive Overrides */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            .mainContent {
+                margin-left: 0;
+                padding: 15px;
+            }
+            .topBar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            .mobile-toggle {
+                display: inline-block !important;
+            }
+            .topBar-content {
+                display: flex;
+                width: 100%;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+        
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #1b4332;
+            padding: 0;
+            margin-right: 15px;
+        }
+        
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1040;
+        }
+        .sidebar-overlay.show {
+            display: block;
         }
 
-            {
-            % endblock %
-        }
+        {% block extraStyles %}{% endblock %}
     </style>
 </head>
 
 <body>
 
-    <div class="sidebar">
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <div class="sidebar" id="sidebar">
         <div class="logoText">FloraFlow</div>
 
         <!-- Dashboard Link Logic -->
@@ -193,8 +241,15 @@
 
     <div class="mainContent">
         <div class="topBar">
-            <h4>{% block pageTitle %}{% endblock %}</h4>
-            <span class="text-muted">Welcome, {{ session['fullName'] }}</span>
+            <div class="topBar-content">
+                <div class="d-flex align-items-center">
+                    <button class="mobile-toggle" onclick="toggleSidebar()">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <h4>{% block pageTitle %}{% endblock %}</h4>
+                </div>
+                <span class="text-muted d-none d-sm-block">Welcome, {{ session['fullName'] }}</span>
+            </div>
         </div>
 
         {% with messages = get_flashed_messages(with_categories=true) %}
@@ -208,8 +263,14 @@
         {% block content %}{% endblock %}
     </div>
 
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('show');
+            document.querySelector('.sidebar-overlay').classList.toggle('show');
+        }
+    </script>
     {% block extraScripts %}{% endblock %}
 
 </body>
 
-</html>
+</html>l>
