@@ -1579,7 +1579,7 @@ def addTask():
 
     # Step 2: Generate the missing values
     assignedDate = date.today()
-    status = 'Pending'
+    status = 'pending'
 
     conn = getDbConnection()
     try:
