@@ -44,69 +44,133 @@
 {% endif %}
 
 <div class="card p-4">
-    <h5 style="color:#1b4332;">All Tasks</h5>
-    <div class="table-responsive">
-<table class="table table-hover mt-3">
-        <thead>
-            <tr>
-                <th>Task</th>
-                <th>Description</th>
-                <th>Assigned To</th>
-                <th>Status</th>
-                <th>Date Assigned</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% if allTasks %}
-            {% for t in allTasks %}
-            <tr>
-                <td>{{ t.taskTitle }}</td>
-                <td>{{ t.taskDescription or '—' }}</td>
-                <td>{{ t.fullName }}</td>
-                <td>
-                    {% if t.status == 'pending' %}
-                    <span class="statusBadge bg-warning text-dark">Pending</span>
-                    {% elif t.status == 'inProgress' %}
-                    <span class="statusBadge bg-primary text-white">In Progress</span>
-                    {% else %}
-                    <span class="statusBadge bg-success text-white">Completed</span>
-                    {% endif %}
-                </td>
-                <td>{{ t.assignedDate.strftime('%d %b %Y') }}</td>
-                <td>
-                    {% if t.status == 'pending' %}
-                    <form method="POST" action="/updateTaskStatus/{{ t.taskId }}" style="display:inline;">
-                        <input type="hidden" name="status" value="inProgress">
-                        <button class="btn btn-sm btn-primary"><i class="bi bi-play-fill"></i></button>
-                    </form>
-                    <form method="POST" action="/updateTaskStatus/{{ t.taskId }}" style="display:inline;">
-                        <input type="hidden" name="status" value="done">
-                        <button class="btn btn-sm btn-success"><i class="bi bi-check"></i></button>
-                    </form>
-                    {% elif t.status == 'inProgress' %}
-                    <form method="POST" action="/updateTaskStatus/{{ t.taskId }}" style="display:inline;">
-                        <input type="hidden" name="status" value="done">
-                        <button class="btn btn-sm btn-success"><i class="bi bi-check"></i></button>
-                    </form>
-                    {% endif %}
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0" style="color:#1b4332;">All Tasks</h5>
+        <span class="badge bg-light text-dark border">Total: {{ allTasks|length }}</span>
+    </div>
 
-                    {% if role == 'admin' %}
-                    <a href="/deleteTask/{{ t.taskId }}" class="btn btn-sm btn-danger"
-                        onclick="return confirm('Delete this task?')">
-                        <i class="bi bi-trash"></i>
-                    </a>
+    <!-- Desktop View: Table (Hidden on Mobile) -->
+    <div class="d-none d-md-block">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Task</th>
+                        <th>Description</th>
+                        <th>Assigned To</th>
+                        <th>Status</th>
+                        <th>Date Assigned</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if allTasks %}
+                    {% for t in allTasks %}
+                    <tr>
+                        <td><strong>{{ t.taskTitle }}</strong></td>
+                        <td>{{ t.taskDescription or '—' }}</td>
+                        <td>{{ t.fullName }}</td>
+                        <td>
+                            {% if t.status == 'pending' %}
+                            <span class="statusBadge bg-warning text-dark">Pending</span>
+                            {% elif t.status == 'inProgress' %}
+                            <span class="statusBadge bg-primary text-white">In Progress</span>
+                            {% else %}
+                            <span class="statusBadge bg-success text-white">Completed</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ t.assignedDate.strftime('%d %b %Y') }}</td>
+                        <td>
+                            {% if t.status == 'pending' %}
+                            <form method="POST" action="/updateTaskStatus/{{ t.taskId }}" style="display:inline;">
+                                <input type="hidden" name="status" value="inProgress">
+                                <button class="btn btn-sm btn-outline-primary" title="Start Task"><i class="bi bi-play-fill"></i></button>
+                            </form>
+                            <form method="POST" action="/updateTaskStatus/{{ t.taskId }}" style="display:inline;">
+                                <input type="hidden" name="status" value="done">
+                                <button class="btn btn-sm btn-outline-success" title="Mark Done"><i class="bi bi-check"></i></button>
+                            </form>
+                            {% elif t.status == 'inProgress' %}
+                            <form method="POST" action="/updateTaskStatus/{{ t.taskId }}" style="display:inline;">
+                                <input type="hidden" name="status" value="done">
+                                <button class="btn btn-sm btn-outline-success" title="Mark Done"><i class="bi bi-check"></i></button>
+                            </form>
+                            {% endif %}
+
+                            {% if role == 'admin' %}
+                            <a href="/deleteTask/{{ t.taskId }}" class="btn btn-sm btn-outline-danger"
+                                onclick="return confirm('Delete this task?')" title="Delete Task">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-3">No tasks found.</td>
+                    </tr>
                     {% endif %}
-                </td>
-            </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Mobile View: Cards (Hidden on Desktop) -->
+    <div class="d-block d-md-none">
+        {% if allTasks %}
+        <div class="row g-3">
+            {% for t in allTasks %}
+            <div class="col-12">
+                <div class="card p-3 shadow-sm border border-start border-4 {% if t.status == 'done' or t.status == 'completed' %}border-success{% elif t.status == 'inProgress' %}border-primary{% else %}border-warning{% endif %}">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <div class="fw-bold text-dark fs-6">{{ t.taskTitle }}</div>
+                            <small class="text-muted"><i class="bi bi-person me-1"></i>{{ t.fullName }} &bull; {{ t.assignedDate.strftime('%d %b %Y') }}</small>
+                        </div>
+                        {% if t.status == 'pending' %}
+                        <span class="statusBadge bg-warning text-dark">Pending</span>
+                        {% elif t.status == 'inProgress' %}
+                        <span class="statusBadge bg-primary text-white">In Progress</span>
+                        {% else %}
+                        <span class="statusBadge bg-success text-white">Completed</span>
+                        {% endif %}
+                    </div>
+                    {% if t.taskDescription %}
+                    <p class="small text-secondary mb-2">{{ t.taskDescription }}</p>
+                    {% endif %}
+                    <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                        <div class="d-flex gap-2">
+                            {% if t.status == 'pending' %}
+                            <form method="POST" action="/updateTaskStatus/{{ t.taskId }}" style="display:inline;">
+                                <input type="hidden" name="status" value="inProgress">
+                                <button class="btn btn-sm btn-outline-primary"><i class="bi bi-play-fill me-1"></i>Start</button>
+                            </form>
+                            <form method="POST" action="/updateTaskStatus/{{ t.taskId }}" style="display:inline;">
+                                <input type="hidden" name="status" value="done">
+                                <button class="btn btn-sm btn-outline-success"><i class="bi bi-check me-1"></i>Complete</button>
+                            </form>
+                            {% elif t.status == 'inProgress' %}
+                            <form method="POST" action="/updateTaskStatus/{{ t.taskId }}" style="display:inline;">
+                                <input type="hidden" name="status" value="done">
+                                <button class="btn btn-sm btn-success"><i class="bi bi-check me-1"></i>Complete</button>
+                            </form>
+                            {% endif %}
+                        </div>
+                        {% if role == 'admin' %}
+                        <a href="/deleteTask/{{ t.taskId }}" class="btn btn-sm btn-outline-danger"
+                            onclick="return confirm('Delete this task?')">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
             {% endfor %}
-            {% else %}
-            <tr>
-                <td colspan="6" class="text-center text-muted">No tasks found.</td>
-            </tr>
-            {% endif %}
-        </tbody>
-    </table>
-</div>
+        </div>
+        {% else %}
+        <div class="text-center text-muted py-4">No tasks found.</div>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}

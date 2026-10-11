@@ -54,52 +54,87 @@
         Leave blank to skip a staff member.
     </p>
 
-    <form method="POST" action="/bulkMarkAttendance">
+    <!-- Desktop View: Table Form (Hidden on Mobile) -->
+    <form method="POST" action="/bulkMarkAttendance" class="d-none d-md-block">
         <div class="table-responsive">
-<table class="table bulkTable">
-            <thead>
-                <tr>
-                    <th>Staff</th>
-                    <th>Role</th>
-                    <th>Designation</th>
-                    <th style="width: 200px;">Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for s in allStaff %}
-                <tr>
-                    <td>
-                        <strong>{{ s.fullName }}</strong>
-                        <input type="hidden" name="staffId[]" value="{{ s.staffId }}">
-                    </td>
-                    <td>
+            <table class="table bulkTable align-middle">
+                <thead>
+                    <tr>
+                        <th>Staff</th>
+                        <th>Role</th>
+                        <th>Designation</th>
+                        <th style="width: 200px;">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in allStaff %}
+                    <tr>
+                        <td>
+                            <strong>{{ s.fullName }}</strong>
+                            <input type="hidden" name="staffId[]" value="{{ s.staffId }}">
+                        </td>
+                        <td>
+                            {% if s.role == 'admin' %}
+                            <span class="badge bg-success">Admin</span>
+                            {% else %}
+                            <span class="badge bg-secondary">Staff</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ s.designation or '—' }}</td>
+                        <td>
+                            <select name="status[]" class="form-select form-select-sm">
+                                <option value="">— No change —</option>
+                                <option value="present" {% if todayMap.get(s.staffId)=='present' %}selected{% endif %}>
+                                    Present
+                                </option>
+                                <option value="absent" {% if todayMap.get(s.staffId)=='absent' %}selected{% endif %}>
+                                    Absent
+                                </option>
+                                <option value="late" {% if todayMap.get(s.staffId)=='late' %}selected{% endif %}>
+                                    Late
+                                </option>
+                            </select>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <button type="submit" class="btn btn-flora px-4 mt-2">
+            <i class="bi bi-save me-2"></i>Save Today's Attendance
+        </button>
+    </form>
+
+    <!-- Mobile View: Cards Form (Hidden on Desktop) -->
+    <form method="POST" action="/bulkMarkAttendance" class="d-block d-md-none">
+        <div class="row g-3 mb-3">
+            {% for s in allStaff %}
+            <div class="col-12">
+                <div class="card p-3 shadow-sm border">
+                    <input type="hidden" name="staffId[]" value="{{ s.staffId }}">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <strong class="text-dark">{{ s.fullName }}</strong>
                         {% if s.role == 'admin' %}
                         <span class="badge bg-success">Admin</span>
                         {% else %}
                         <span class="badge bg-secondary">Staff</span>
                         {% endif %}
-                    </td>
-                    <td>{{ s.designation or '—' }}</td>
-                    <td>
-                        <select name="status[]" class="form-select form-select-sm">
+                    </div>
+                    <div class="text-muted small mb-2">{{ s.designation or 'No designation' }}</div>
+                    <div>
+                        <label class="form-label small fw-semibold text-muted mb-1">Today's Status</label>
+                        <select name="status[]" class="form-select">
                             <option value="">— No change —</option>
-                            <option value="present" {% if todayMap.get(s.staffId)=='present' %}selected{% endif %}>
-                                Present
-                            </option>
-                            <option value="absent" {% if todayMap.get(s.staffId)=='absent' %}selected{% endif %}>
-                                Absent
-                            </option>
-                            <option value="late" {% if todayMap.get(s.staffId)=='late' %}selected{% endif %}>
-                                Late
-                            </option>
+                            <option value="present" {% if todayMap.get(s.staffId)=='present' %}selected{% endif %}>Present</option>
+                            <option value="absent" {% if todayMap.get(s.staffId)=='absent' %}selected{% endif %}>Absent</option>
+                            <option value="late" {% if todayMap.get(s.staffId)=='late' %}selected{% endif %}>Late</option>
                         </select>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-</div>
-        <button type="submit" class="btn btn-flora px-4">
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <button type="submit" class="btn btn-flora w-100 py-2">
             <i class="bi bi-save me-2"></i>Save Today's Attendance
         </button>
     </form>
@@ -145,70 +180,120 @@
         </div>
     </form>
 
-    <!-- History Table -->
-    <div class="table-responsive">
-<table class="table table-hover historyTable">
-        <thead>
-            <tr>
-                <th>Date</th>
-                {% if role == 'admin' %}<th>Staff</th>
-                <th>Role</th>{% endif %}
-                <th>Status</th>
-                {% if role == 'admin' %}<th>Action</th>{% endif %}
-            </tr>
-        </thead>
-        <tbody>
-            {% if history %}
-            {% for h in history %}
-            <tr>
-                <td>{{ h.attendanceDate.strftime('%d %b %Y (%a)') }}</td>
-                {% if role == 'admin' %}
-                <td>{{ h.fullName }}</td>
-                <td>
-                    {% if h.role == 'admin' %}
-                    <span class="badge bg-success">Admin</span>
+    <!-- Desktop View: Table (Hidden on Mobile) -->
+    <div class="d-none d-md-block">
+        <div class="table-responsive">
+            <table class="table table-hover historyTable align-middle">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        {% if role == 'admin' %}<th>Staff</th>
+                        <th>Role</th>{% endif %}
+                        <th>Status</th>
+                        {% if role == 'admin' %}<th>Action</th>{% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if history %}
+                    {% for h in history %}
+                    <tr>
+                        <td>{{ h.attendanceDate.strftime('%d %b %Y (%a)') }}</td>
+                        {% if role == 'admin' %}
+                        <td>{{ h.fullName }}</td>
+                        <td>
+                            {% if h.role == 'admin' %}
+                            <span class="badge bg-success">Admin</span>
+                            {% else %}
+                            <span class="badge bg-secondary">Staff</span>
+                            {% endif %}
+                        </td>
+                        {% endif %}
+                        <td>
+                            {% if h.status == 'present' %}
+                            <span class="statusBadge bg-success text-white">Present</span>
+                            {% elif h.status == 'late' %}
+                            <span class="statusBadge bg-warning text-dark">Late</span>
+                            {% else %}
+                            <span class="statusBadge bg-danger text-white">Absent</span>
+                            {% endif %}
+                        </td>
+                        {% if role == 'admin' %}
+                        <td>
+                            <form method="POST" action="/editAttendance/{{ h.attendanceId }}" class="d-flex gap-1">
+                                <select name="status" class="form-select form-select-sm" style="width: 120px;">
+                                    <option value="present" {% if h.status=='present' %}selected{% endif %}>Present</option>
+                                    <option value="absent" {% if h.status=='absent' %}selected{% endif %}>Absent</option>
+                                    <option value="late" {% if h.status=='late' %}selected{% endif %}>Late</option>
+                                </select>
+                                <button type="submit" class="btn btn-sm btn-flora">
+                                    <i class="bi bi-arrow-repeat"></i>
+                                </button>
+                            </form>
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
                     {% else %}
-                    <span class="badge bg-secondary">Staff</span>
+                    <tr>
+                        <td colspan="{% if role == 'admin' %}5{% else %}2{% endif %}" class="text-center text-muted py-3">
+                            No attendance records found in this date range.
+                        </td>
+                    </tr>
                     {% endif %}
-                </td>
-                {% endif %}
-                <td>
-                    {% if h.status == 'present' %}
-                    <span class="statusBadge bg-success text-white">Present</span>
-                    {% elif h.status == 'late' %}
-                    <span class="statusBadge bg-warning text-dark">Late</span>
-                    {% else %}
-                    <span class="statusBadge bg-danger text-white">Absent</span>
-                    {% endif %}
-                </td>
-                {% if role == 'admin' %}
-                <td>
-                    <form method="POST" action="/editAttendance/{{ h.attendanceId }}" class="d-flex gap-1">
-                        <select name="status" class="form-select form-select-sm" style="width: 120px;">
-                            <option value="present" {% if h.status=='present' %}selected{% endif %}>Present</option>
-                            <option value="absent" {% if h.status=='absent' %}selected{% endif %}>Absent</option>
-                            <option value="late" {% if h.status=='late' %}selected{% endif %}>Late</option>
-                        </select>
-                        <button type="submit" class="btn btn-sm btn-flora">
-                            <i class="bi bi-arrow-repeat"></i>
-                        </button>
-                    </form>
-                </td>
-                {% endif %}
-            </tr>
-            {% endfor %}
-            {% else %}
-            <tr>
-                <td colspan="{% if role == 'admin' %}5{% else %}2{% endif %}" class="text-center text-muted py-3">
-                    No attendance records found in this date range.
-                </td>
-            </tr>
-            {% endif %}
-        </tbody>
-    </table>
-</div>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-    <p class="text-muted small mb-0">{{ history|length }} record(s) shown.</p>
+    <!-- Mobile View: Cards (Hidden on Desktop) -->
+    <div class="d-block d-md-none">
+        {% if history %}
+        <div class="row g-3">
+            {% for h in history %}
+            <div class="col-12">
+                <div class="card p-3 shadow-sm border border-start border-4 {% if h.status == 'present' %}border-success{% elif h.status == 'late' %}border-warning{% else %}border-danger{% endif %}">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="fw-bold text-dark">{{ h.attendanceDate.strftime('%d %b %Y (%a)') }}</span>
+                        {% if h.status == 'present' %}
+                        <span class="statusBadge bg-success text-white">Present</span>
+                        {% elif h.status == 'late' %}
+                        <span class="statusBadge bg-warning text-dark">Late</span>
+                        {% else %}
+                        <span class="statusBadge bg-danger text-white">Absent</span>
+                        {% endif %}
+                    </div>
+                    {% if role == 'admin' %}
+                    <div class="mb-2">
+                        <span class="fw-semibold text-secondary">{{ h.fullName }}</span>
+                        {% if h.role == 'admin' %}
+                        <span class="badge bg-success ms-1">Admin</span>
+                        {% else %}
+                        <span class="badge bg-secondary ms-1">Staff</span>
+                        {% endif %}
+                    </div>
+                    <div class="pt-2 border-top">
+                        <form method="POST" action="/editAttendance/{{ h.attendanceId }}" class="d-flex gap-2 align-items-center">
+                            <select name="status" class="form-select form-select-sm">
+                                <option value="present" {% if h.status=='present' %}selected{% endif %}>Present</option>
+                                <option value="absent" {% if h.status=='absent' %}selected{% endif %}>Absent</option>
+                                <option value="late" {% if h.status=='late' %}selected{% endif %}>Late</option>
+                            </select>
+                            <button type="submit" class="btn btn-sm btn-flora px-3" title="Update">
+                                <i class="bi bi-arrow-repeat me-1"></i>Update
+                            </button>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center text-muted py-3">No attendance records found in this date range.</div>
+        {% endif %}
+    </div>
+
+    <p class="text-muted small mb-0 mt-3">{{ history|length }} record(s) shown.</p>
 </div>
 
 {% endblock %}

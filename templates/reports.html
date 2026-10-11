@@ -31,24 +31,41 @@
         <p><strong>Top Staff:</strong> {{ topStaff }}</p>
     </div>
 
-    <div class="table-responsive">
-<table class="table table-hover mt-2">
-        <thead>
-            <tr>
-                <th>Staff</th>
-                <th>Total Sales</th>
-            </tr>
-        </thead>
-        <tbody>
+    <!-- Desktop View: Table -->
+    <div class="d-none d-md-block">
+        <div class="table-responsive">
+            <table class="table table-hover mt-2 align-middle">
+                <thead>
+                    <tr>
+                        <th>Staff</th>
+                        <th>Total Sales</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in salesByStaff %}
+                    <tr>
+                        <td><strong>{{ r.fullName }}</strong></td>
+                        <td><strong class="text-success">Rs. {{ '{:,.2f}'.format(r.total) }}</strong></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Mobile View: Cards -->
+    <div class="d-block d-md-none">
+        <div class="row g-2 mt-2">
             {% for r in salesByStaff %}
-            <tr>
-                <td>{{ r.fullName }}</td>
-                <td>Rs. {{ '{:,.2f}'.format(r.total) }}</td>
-            </tr>
+            <div class="col-12">
+                <div class="card p-3 shadow-sm border d-flex flex-row justify-content-between align-items-center">
+                    <span class="fw-bold text-dark">{{ r.fullName }}</span>
+                    <span class="fw-bold text-success">Rs. {{ '{:,.2f}'.format(r.total) }}</span>
+                </div>
+            </div>
             {% endfor %}
-        </tbody>
-    </table>
-</div>
+        </div>
+    </div>
 </div>
 
 <!-- Top Selling Plants -->
@@ -72,50 +89,87 @@
         </div>
     </form>
 
-    <div class="table-responsive">
-<table class="table table-hover mt-3">
-        <thead>
-            <tr>
-                <th>Plant</th>
-                <th>Quantity Sold</th>
-            </tr>
-        </thead>
-        <tbody>
+    <!-- Desktop View: Table -->
+    <div class="d-none d-md-block">
+        <div class="table-responsive">
+            <table class="table table-hover mt-3 align-middle">
+                <thead>
+                    <tr>
+                        <th>Plant</th>
+                        <th>Quantity Sold</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in topPlants %}
+                    <tr>
+                        <td><strong>{{ r.plantName }}</strong></td>
+                        <td><span class="badge bg-flora">{{ r.qty }}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Mobile View: Cards -->
+    <div class="d-block d-md-none">
+        <div class="row g-2 mt-2">
             {% for r in topPlants %}
-            <tr>
-                <td>{{ r.plantName }}</td>
-                <td>{{ r.qty }}</td>
-            </tr>
+            <div class="col-12">
+                <div class="card p-3 shadow-sm border d-flex flex-row justify-content-between align-items-center">
+                    <span class="fw-bold text-dark">{{ r.plantName }}</span>
+                    <span class="badge bg-flora px-3 py-2">{{ r.qty }} sold</span>
+                </div>
+            </div>
             {% endfor %}
-        </tbody>
-    </table>
-</div>
+        </div>
+    </div>
 </div>
 
 <!-- Low Stock Report -->
 <div class="card p-4 mb-4">
     <h5 style="color:#1b4332;">Low Stock Report</h5>
     <a class="btn btn-secondary mb-3" href="/reports/lowStock/pdf">Download PDF</a>
-    <div class="table-responsive">
-<table class="table table-hover">
-        <thead>
-            <tr>
-                <th>Type</th>
-                <th>Name</th>
-                <th>Qty</th>
-            </tr>
-        </thead>
-        <tbody>
+    <!-- Desktop View: Table -->
+    <div class="d-none d-md-block">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Name</th>
+                        <th>Qty</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in lowStock %}
+                    <tr>
+                        <td>{{ r.itemType }}</td>
+                        <td><strong>{{ r.itemName }}</strong></td>
+                        <td><span class="badge bg-danger">{{ r.quantity }}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Mobile View: Cards -->
+    <div class="d-block d-md-none">
+        <div class="row g-2">
             {% for r in lowStock %}
-            <tr>
-                <td>{{ r.itemType }}</td>
-                <td>{{ r.itemName }}</td>
-                <td><span class="badge bg-danger">{{ r.quantity }}</span></td>
-            </tr>
+            <div class="col-12">
+                <div class="card p-3 shadow-sm border d-flex flex-row justify-content-between align-items-center">
+                    <div>
+                        <strong class="text-dark">{{ r.itemName }}</strong>
+                        <small class="text-muted d-block">{{ r.itemType }}</small>
+                    </div>
+                    <span class="badge bg-danger px-3 py-2">{{ r.quantity }} left</span>
+                </div>
+            </div>
             {% endfor %}
-        </tbody>
-    </table>
-</div>
+        </div>
+    </div>
 </div>
 
 <!-- Attendance Report -->
@@ -134,28 +188,49 @@
         </div>
     </form>
 
-    <div class="table-responsive">
-<table class="table table-hover mt-3">
-        <thead>
-            <tr>
-                <th>Staff</th>
-                <th>Present</th>
-                <th>Absent</th>
-                <th>Late</th>
-            </tr>
-        </thead>
-        <tbody>
+    <!-- Desktop View: Table -->
+    <div class="d-none d-md-block">
+        <div class="table-responsive">
+            <table class="table table-hover mt-3 align-middle">
+                <thead>
+                    <tr>
+                        <th>Staff</th>
+                        <th>Present</th>
+                        <th>Absent</th>
+                        <th>Late</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in attendanceSummary %}
+                    <tr>
+                        <td><strong>{{ r.fullName }}</strong></td>
+                        <td><span class="badge bg-success">{{ r.presentCount }}</span></td>
+                        <td><span class="badge bg-danger">{{ r.absentCount }}</span></td>
+                        <td><span class="badge bg-warning text-dark">{{ r.lateCount }}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Mobile View: Cards -->
+    <div class="d-block d-md-none">
+        <div class="row g-2 mt-2">
             {% for r in attendanceSummary %}
-            <tr>
-                <td>{{ r.fullName }}</td>
-                <td>{{ r.presentCount }}</td>
-                <td>{{ r.absentCount }}</td>
-                <td>{{ r.lateCount }}</td>
-            </tr>
+            <div class="col-12">
+                <div class="card p-3 shadow-sm border">
+                    <div class="fw-bold text-dark mb-2">{{ r.fullName }}</div>
+                    <div class="d-flex gap-2">
+                        <span class="badge bg-success flex-fill py-2">Present: {{ r.presentCount }}</span>
+                        <span class="badge bg-danger flex-fill py-2">Absent: {{ r.absentCount }}</span>
+                        <span class="badge bg-warning text-dark flex-fill py-2">Late: {{ r.lateCount }}</span>
+                    </div>
+                </div>
+            </div>
             {% endfor %}
-        </tbody>
-    </table>
-</div>
+        </div>
+    </div>
 </div>
 
 {% endblock %}

@@ -18,34 +18,61 @@
 
 <div class="card p-4 mb-4">
     <h5 style="color: #1b4332;">Items</h5>
-    <div class="table-responsive">
-<table class="table mt-2">
-        <thead>
-            <tr>
-                <th>Item</th>
-                <th>Quantity</th>
-                <th>Unit Price</th>
-                <th>Subtotal</th>
-            </tr>
-        </thead>
-        <tbody>
+    <!-- Desktop View: Table -->
+    <div class="d-none d-md-block">
+        <div class="table-responsive">
+            <table class="table mt-2 align-middle">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in saleItems %}
+                    <tr>
+                        <td><strong>{{ item.plantName or item.accessoryName }}</strong></td>
+                        <td>{{ item.quantity }}</td>
+                        <td>Rs. {{ item.unitPrice }}</td>
+                        <td><strong class="text-success">Rs. {{ item.subtotal }}</strong></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" class="text-end fw-bold">Total:</td>
+                        <td class="fw-bold fs-5 text-success">Rs. {{ sale.totalBill }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <!-- Mobile View: Cards -->
+    <div class="d-block d-md-none">
+        <div class="row g-2 mt-1">
             {% for item in saleItems %}
-            <tr>
-                <td>{{ item.plantName or item.accessoryName }}</td>
-                <td>{{ item.quantity }}</td>
-                <td>Rs. {{ item.unitPrice }}</td>
-                <td>Rs. {{ item.subtotal }}</td>
-            </tr>
+            <div class="col-12">
+                <div class="card p-3 shadow-sm border">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <strong class="text-dark">{{ item.plantName or item.accessoryName }}</strong>
+                        <span class="badge bg-light text-dark border">Qty: {{ item.quantity }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center text-muted small">
+                        <span>Unit: Rs. {{ item.unitPrice }}</span>
+                        <span class="fw-bold text-success fs-6">Subtotal: Rs. {{ item.subtotal }}</span>
+                    </div>
+                </div>
+            </div>
             {% endfor %}
-        </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="3" class="text-end fw-bold">Total:</td>
-                <td class="fw-bold" style="color: #1b4332;">Rs. {{ sale.totalBill }}</td>
-            </tr>
-        </tfoot>
-    </table>
-</div>
+        </div>
+        <div class="card p-3 mt-3 bg-light border-0 d-flex flex-row justify-content-between align-items-center">
+            <span class="fw-bold">Total Bill:</span>
+            <span class="fw-bold fs-5 text-success">Rs. {{ sale.totalBill }}</span>
+        </div>
+    </div>
 </div>
 
 <a href="/salesHistory" class="btn btn-secondary">
