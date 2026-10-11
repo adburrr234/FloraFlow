@@ -244,6 +244,24 @@ def logout():
     return redirect(url_for('login'))
 
 
+@app.route('/privacyPolicy')
+@app.route('/privacy')
+def privacyPolicy():
+    unreadAlerts = 0
+    if 'staffId' in session and session.get('role') == 'admin':
+        try:
+            conn = getDbConnection()
+            try:
+                cursor = conn.cursor()
+                cursor.execute("SELECT COUNT(*) AS total FROM SystemAlerts WHERE isRead = 0")
+                unreadAlerts = cursor.fetchone()['total']
+            finally:
+                conn.close()
+        except Exception:
+            unreadAlerts = 0
+    return render_template('privacyPolicy.html', unreadAlerts=unreadAlerts)
+
+
 @app.route('/dashboard')
 def dashboard():
     if 'staffId' not in session or session['role'] != 'admin':
@@ -395,7 +413,7 @@ def plants():
         cursor.execute("""
             SELECT p.*, c.categoryName 
             FROM Plants p 
-            JOIN PlantCategories c ON p.categoryId = c.categoryId
+            LEFT JOIN PlantCategories c ON p.categoryId = c.categoryId
             ORDER BY p.plantId
         """)
         allPlants = cursor.fetchall()
@@ -493,6 +511,8 @@ def deletePlant(plantId):
         cursor.execute("DELETE FROM Plants WHERE plantId = %s", (plantId,))
         conn.commit()
         flash('Plant deleted successfully', 'success')
+    except pymysql.Error as e:
+        flash('Cannot delete plant: It is referenced by existing sales, purchases, or care schedules.', 'danger')
     finally:
         conn.close()
 
@@ -596,6 +616,8 @@ def deleteAccessory(accessoryId):
             "DELETE FROM Accessories WHERE accessoryId = %s", (accessoryId,))
         conn.commit()
         flash('Accessory deleted successfully', 'success')
+    except pymysql.Error as e:
+        flash('Cannot delete accessory: It is referenced by existing sales or orders.', 'danger')
     finally:
         conn.close()
 

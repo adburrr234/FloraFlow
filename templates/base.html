@@ -198,18 +198,19 @@
         <div class="logoText">FloraFlow</div>
 
         <!-- Dashboard Link Logic -->
-        {% if session['role'] == 'admin' %}
+        {% if session.get('role') == 'admin' %}
         <a href="/dashboard" class="{% if request.path == '/dashboard' %}active{% endif %}">
             <i class="bi bi-house me-2"></i>Admin Dashboard</a>
         <a href="/plants" class="{% if request.path == '/plants' %}active{% endif %}">
             <i class="bi bi-flower1 me-2"></i>Plants</a>
         <a href="/accessories" class="{% if request.path == '/accessories' %}active{% endif %}">
             <i class="bi bi-basket me-2"></i>Accessories</a>
-        {% else %}
+        {% elif session.get('role') == 'staff' %}
         <a href="/staffDashboard" class="{% if request.path == '/staffDashboard' %}active{% endif %}">
             <i class="bi bi-person-workspace me-2"></i>My Dashboard</a>
         {% endif %}
 
+        {% if session.get('staffId') %}
         <!-- Shared Links -->
         <a href="/pos" class="{% if request.path == '/pos' %}active{% endif %}">
             <i class="bi bi-cart me-2"></i>POS</a>
@@ -217,7 +218,7 @@
             <i class="bi bi-clock-history me-2"></i>Sales History</a>
 
         <!-- Admin Only -->
-        {% if session['role'] == 'admin' %}
+        {% if session.get('role') == 'admin' %}
         <a href="/procurement" class="{% if request.path == '/procurement' %}active{% endif %}">
             <i class="bi bi-box me-2"></i>Procurement</a>
         <a href="/staff" class="{% if request.path == '/staff' %}active{% endif %}">
@@ -233,7 +234,7 @@
             <i class="bi bi-droplet me-2"></i>Care Schedule</a>
 
         <!-- Admin Only -->
-        {% if session['role'] == 'admin' %}
+        {% if session.get('role') == 'admin' %}
         <a href="/alerts" class="{% if request.path == '/alerts' %}active{% endif %}">
             <i class="bi bi-bell me-2"></i>Alerts
             {% if unreadAlerts and unreadAlerts > 0 %}
@@ -243,11 +244,21 @@
         <a href="/reports" class="{% if request.path == '/reports' %}active{% endif %}">
             <i class="bi bi-file-earmark-pdf me-2"></i>Reports</a>
         {% endif %}
+        {% endif %}
+
+        <!-- Policy -->
+        <a href="/privacyPolicy" class="{% if request.path == '/privacyPolicy' %}active{% endif %}">
+            <i class="bi bi-shield-check me-2"></i>Privacy Policy</a>
 
         <!-- Logout -->
         <div style="flex-grow: 1;"></div>
+        {% if session.get('staffId') %}
         <a href="/logout" style="margin-bottom: 30px; color: #ffb3b3;">
             <i class="bi bi-box-arrow-right me-2"></i>Logout</a>
+        {% else %}
+        <a href="/login" style="margin-bottom: 30px; color: #d8f3dc;">
+            <i class="bi bi-box-arrow-in-right me-2"></i>Login</a>
+        {% endif %}
     </div>
 
     <div class="mainContent">
@@ -259,7 +270,7 @@
                     </button>
                     <h4>{% block pageTitle %}{% endblock %}</h4>
                 </div>
-                <span class="text-muted d-none d-sm-block">Welcome, {{ session['fullName'] }}</span>
+                <span class="text-muted d-none d-sm-block">Welcome, {{ session.get('fullName', 'Guest') }}</span>
             </div>
         </div>
 

@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}Plants{% endblock %}
-{% block pageTitle %}<i class="bi bi-flower1 me-2"></i>Plants Management{% endblock %}
+{% block pageTitle %}Plants Management <i class="bi bi-flower1 ms-2"></i>{% endblock %}
 
 {% block content %}
 <div class="card p-4 mb-4">
@@ -46,43 +46,58 @@
 <div class="card p-4">
     <h5 class="mb-3" style="color: #1b4332;">All Plants</h5>
     <div class="table-responsive">
-<table class="table table-hover">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for plant in allPlants %}
-            <tr>
-                <td>{{ plant.plantId }}</td>
-                <td>{{ plant.plantName }}</td>
-                <td>{{ plant.categoryName }}</td>
-                <td>Rs. {{ plant.price }}</td>
-                <td>
-                    {% if plant.quantity < 5 %} <span class="badge bg-danger">{{ plant.quantity }}</span>
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th style="width: 70px;">ID</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Description</th>
+                    <th style="width: 100px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if allPlants %}
+                {% for plant in allPlants %}
+                <tr>
+                    <td class="text-muted fw-semibold">{{ plant.plantId }}</td>
+                    <td class="fw-bold" style="color: #1b4332;">{{ plant.plantName }}</td>
+                    <td><span class="badge bg-light text-dark border">{{ plant.categoryName or 'Uncategorized' }}</span></td>
+                    <td>Rs. {{ '{:,.2f}'.format(plant.price) }}</td>
+                    <td>
+                        {% if plant.quantity == 0 %}
+                        <span class="badge bg-secondary">0 (Out of stock)</span>
+                        {% elif plant.quantity < 5 %}
+                        <span class="badge bg-danger">{{ plant.quantity }} (Low)</span>
                         {% else %}
                         <span class="badge bg-success">{{ plant.quantity }}</span>
                         {% endif %}
-                </td>
-                <td>
-                    <a href="/editPlant/{{ plant.plantId }}" class="btn btn-sm btn-warning">
-                        <i class="bi bi-pencil"></i>
-                    </a>
-                    <a href="/deletePlant/{{ plant.plantId }}" class="btn btn-sm btn-danger"
-                        onclick="return confirm('Are you sure?')">
-                        <i class="bi bi-trash"></i>
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+                    </td>
+                    <td class="text-muted small" style="max-width: 250px;">{{ plant.description or '—' }}</td>
+                    <td class="text-nowrap">
+                        <div class="d-flex gap-1">
+                            <a href="/editPlant/{{ plant.plantId }}" class="btn btn-sm btn-warning" title="Edit Plant">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="/deletePlant/{{ plant.plantId }}" class="btn btn-sm btn-danger" title="Delete Plant"
+                                onclick="return confirm('Are you sure you want to delete {{ plant.plantName }}?')">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="7" class="text-center text-muted py-4">
+                        <i class="bi bi-inbox me-2"></i>No plants found.
+                    </td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock %}

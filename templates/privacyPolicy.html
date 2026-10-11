@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% block title %}Privacy Policy{% endblock %}
+{% block pageTitle %}Privacy Policy <i class="bi bi-shield-check ms-2"></i>{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0">
+    {% if not session.get('staffId') %}
+    <div class="alert alert-info d-flex justify-content-between align-items-center mb-4">
+        <span><i class="bi bi-info-circle me-2"></i>You are viewing FloraFlow's public Privacy Policy.</span>
+        <a href="/login" class="btn btn-sm btn-flora">Back to Login</a>
+    </div>
+    {% endif %}
+
+    <div class="card p-4 mb-4 border-0 shadow-sm" style="background: linear-gradient(135deg, #1b4332 0%, #2d6a4f 100%); color: white;">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <div>
+                <h3 class="mb-1 text-white fw-bold">FloraFlow Privacy Policy</h3>
+                <p class="mb-0 text-white-50">Effective Date: October 2026 &bull; Version 1.2</p>
+            </div>
+            <div>
+                <span class="badge bg-light text-dark px-3 py-2 fs-6">
+                    <i class="bi bi-lock-fill me-1 text-success"></i> Data Protection Compliant
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card p-4 mb-4">
+                <h5 class="fw-bold mb-3" style="color: #1b4332;">
+                    <i class="bi bi-journal-text me-2"></i>1. Overview & Scope
+                </h5>
+                <p class="text-secondary leading-relaxed">
+                    FloraFlow ("we", "our", or "the System") is committed to protecting the privacy, confidentiality, and security of all personal, operational, and customer data processed through our Nursery Management System. This Privacy Policy details our practices concerning data collection, storage, operational utilization, and safeguarding measures.
+                </p>
+                <p class="text-secondary mb-0">
+                    This policy applies to all administrators, staff members, store associates, and suppliers interacting with the FloraFlow portal across web and mobile interfaces.
+                </p>
+            </div>
+
+            <div class="card p-4 mb-4">
+                <h5 class="fw-bold mb-3" style="color: #1b4332;">
+                    <i class="bi bi-database-check me-2"></i>2. Information We Collect
+                </h5>
+                <div class="table-responsive">
+                    <table class="table table-bordered align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Category</th>
+                                <th>Data Elements</th>
+                                <th>Purpose</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="fw-semibold text-success">Staff Information</td>
+                                <td>Full name, username, encrypted password, role, designation, phone, email, hire date, salary.</td>
+                                <td>Authentication, access control, shift tracking, and payroll administration.</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold text-success">Inventory Data</td>
+                                <td>Plant species, accessories, categories, pricing, stock levels, and care instructions.</td>
+                                <td>Catalog management, automated reordering, and POS lookups.</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold text-success">Sales & Transactions</td>
+                                <td>Sale timestamps, line items, quantities, payment modes, and cashier IDs.</td>
+                                <td>Billing, revenue reporting, tax records, and purchase history.</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold text-success">Operational Logs</td>
+                                <td>Attendance clock-ins, assigned tasks, plant care schedules, and system alerts.</td>
+                                <td>Workforce management, nursery health monitoring, and auditability.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card p-4 mb-4">
+                <h5 class="fw-bold mb-3" style="color: #1b4332;">
+                    <i class="bi bi-shield-lock-fill me-2"></i>3. Data Security & Storage Architecture
+                </h5>
+                <p class="text-secondary">
+                    FloraFlow applies robust multi-layer cybersecurity standards to safeguard system records:
+                </p>
+                <ul class="text-secondary mb-3">
+                    <li class="mb-2"><strong>Database Encryption:</strong> All database interactions with our distributed TiDB cloud cluster are enforced through TLS/SSL encrypted channels using dedicated Certificate Authority (CA) validation.</li>
+                    <li class="mb-2"><strong>Access Controls:</strong> Role-Based Access Control (RBAC) separates staff workflows from administrative features, restricting sensitive operations like salary reviews and database credentials.</li>
+                    <li class="mb-2"><strong>Session Integrity:</strong> Web sessions utilize cryptographically signed cookies with HTTP-only flags to prevent session hijacking and cross-site scripting vulnerabilities.</li>
+                    <li><strong>Secret Management:</strong> Environment configurations and connection keys are strictly quarantined in secured environment variables.</li>
+                </ul>
+            </div>
+
+            <div class="card p-4 mb-4">
+                <h5 class="fw-bold mb-3" style="color: #1b4332;">
+                    <i class="bi bi-arrow-repeat me-2"></i>4. Data Retention & User Rights
+                </h5>
+                <p class="text-secondary">
+                    Staff members retain the right to review their registered profile details, request credential updates, and verify assigned operational tasks. Administrative records, including sales ledgers and inventory procurement histories, are retained in accordance with commercial nursery accounting regulations.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card p-4 mb-4">
+                <h5 class="fw-bold mb-3" style="color: #1b4332;">
+                    <i class="bi bi-info-circle-fill me-2"></i>Quick Summary
+                </h5>
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-3 d-flex align-items-start">
+                        <i class="bi bi-check-circle-fill text-success fs-5 me-2"></i>
+                        <span class="small text-secondary">Zero third-party selling of nursery operational or staff data.</span>
+                    </li>
+                    <li class="mb-3 d-flex align-items-start">
+                        <i class="bi bi-check-circle-fill text-success fs-5 me-2"></i>
+                        <span class="small text-secondary">End-to-end SSL encryption on all database queries and backups.</span>
+                    </li>
+                    <li class="mb-3 d-flex align-items-start">
+                        <i class="bi bi-check-circle-fill text-success fs-5 me-2"></i>
+                        <span class="small text-secondary">Strict role separation between Store Associates and Admin managers.</span>
+                    </li>
+                    <li class="d-flex align-items-start">
+                        <i class="bi bi-check-circle-fill text-success fs-5 me-2"></i>
+                        <span class="small text-secondary">Transparent attendance, task tracking, and inventory logs.</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="card p-4 mb-4 bg-light border-0">
+                <h6 class="fw-bold mb-2" style="color: #1b4332;">
+                    <i class="bi bi-envelope-at me-2"></i>Contact & Inquiries
+                </h6>
+                <p class="small text-secondary mb-3">
+                    For inquiries regarding data protection, access requests, or policy updates, please reach out to the system administration desk:
+                </p>
+                <div class="p-3 bg-white rounded-3 border">
+                    <div class="small fw-bold text-dark">FloraFlow Operations Desk</div>
+                    <div class="small text-muted"><i class="bi bi-geo-alt me-1"></i> Nursery HQ, Islamabad, Pakistan</div>
+                    <div class="small text-muted"><i class="bi bi-envelope me-1"></i> privacy@floraflow.internal</div>
+                </div>
+            </div>
+
+            <div class="text-center">
+                {% if session.get('staffId') %}
+                    {% if session.get('role') == 'admin' %}
+                    <a href="/dashboard" class="btn btn-flora w-100 py-2">
+                        <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+                    </a>
+                    {% else %}
+                    <a href="/staffDashboard" class="btn btn-flora w-100 py-2">
+                        <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+                    </a>
+                    {% endif %}
+                {% else %}
+                <a href="/login" class="btn btn-flora w-100 py-2">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Proceed to Login
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
