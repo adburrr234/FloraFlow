@@ -44,125 +44,153 @@
     </form>
 </div>
 
-<div class="card p-4">
+<!-- Desktop View: Table inside Card -->
+<div class="card p-4 d-none d-md-block border-0 shadow-sm" style="border-radius: 12px;">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="mb-0" style="color: #1b4332;">All Plants</h5>
         <span class="badge bg-light text-dark border">Total: {{ totalCount }}</span>
     </div>
-
-    <!-- Desktop View: Table (Hidden on Mobile) -->
-    <div class="d-none d-md-block">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle">
-                <thead>
-                    <tr>
-                        <th style="width: 70px;">ID</th>
-                        <th>Name</th>
-                        <th>Category</th>
-                        <th>Price</th>
-                        <th>Quantity</th>
-                        <th>Description</th>
-                        <th style="width: 100px;">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% if allPlants %}
-                    {% for plant in allPlants %}
-                    <tr>
-                        <td class="text-muted fw-semibold">#{{ plant.plantId }}</td>
-                        <td class="fw-bold" style="color: #1b4332;">{{ plant.plantName }}</td>
-                        <td><span class="badge bg-light text-dark border">{{ plant.categoryName or 'Uncategorized' }}</span></td>
-                        <td>Rs. {{ '{:,.2f}'.format(plant.price) }}</td>
-                        <td>
-                            {% if plant.quantity == 0 %}
-                            <span class="badge bg-secondary">Out of stock</span>
-                            {% elif plant.quantity < 5 %}
-                            <span class="badge bg-danger">{{ plant.quantity }} (Low)</span>
-                            {% else %}
-                            <span class="badge bg-success">{{ plant.quantity }}</span>
-                            {% endif %}
-                        </td>
-                        <td class="text-muted small" style="max-width: 250px;">{{ plant.description or '—' }}</td>
-                        <td class="text-nowrap">
-                            <div class="d-flex gap-1">
-                                <a href="/editPlant/{{ plant.plantId }}" class="btn btn-sm btn-warning" title="Edit Plant">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
-                                <a href="/deletePlant/{{ plant.plantId }}" class="btn btn-sm btn-danger" title="Delete Plant"
-                                    onclick="return confirm('Are you sure you want to delete {{ plant.plantName }}?')">
-                                    <i class="bi bi-trash"></i>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                    {% else %}
-                    <tr>
-                        <td colspan="7" class="text-center text-muted py-4">
-                            <i class="bi bi-inbox me-2"></i>No plants found.
-                        </td>
-                    </tr>
-                    {% endif %}
-                </tbody>
-            </table>
-        </div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th style="width: 70px;">ID</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Description</th>
+                    <th style="width: 100px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if allPlants %}
+                {% for plant in allPlants %}
+                <tr>
+                    <td class="text-muted fw-semibold">#{{ plant.plantId }}</td>
+                    <td class="fw-bold" style="color: #1b4332;">{{ plant.plantName }}</td>
+                    <td><span class="badge bg-light text-dark border">{{ plant.categoryName or 'Uncategorized' }}</span></td>
+                    <td>Rs. {{ '{:,.2f}'.format(plant.price) }}</td>
+                    <td>
+                        {% if plant.quantity == 0 %}
+                        <span class="badge bg-secondary">Out of stock</span>
+                        {% elif plant.quantity < 5 %}
+                        <span class="badge bg-danger">{{ plant.quantity }} (Low)</span>
+                        {% else %}
+                        <span class="badge bg-success">{{ plant.quantity }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-muted small" style="max-width: 250px;">{{ plant.description or '—' }}</td>
+                    <td class="text-nowrap">
+                        <div class="d-flex gap-1">
+                            <a href="/editPlant/{{ plant.plantId }}" class="btn btn-sm btn-warning" title="Edit Plant">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="/deletePlant/{{ plant.plantId }}" class="btn btn-sm btn-danger" title="Delete Plant"
+                                onclick="return confirm('Are you sure you want to delete {{ plant.plantName }}?')">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="7" class="text-center text-muted py-4">
+                        <i class="bi bi-inbox me-2"></i>No plants found.
+                    </td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
     </div>
 
-    <!-- Mobile View: Cards (Hidden on Desktop) -->
-    <div class="d-block d-md-none">
-        {% if allPlants %}
-        <div class="row g-3">
-            {% for plant in allPlants %}
-            <div class="col-12">
-                <div class="card p-3 border shadow-sm" style="border-radius: 12px; background: #fafdfb;">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        <div>
-                            <span class="text-muted small">#{{ plant.plantId }}</span>
-                            <h6 class="fw-bold mb-1" style="color: #1b4332;">{{ plant.plantName }}</h6>
-                            <span class="badge bg-light text-dark border">{{ plant.categoryName or 'Uncategorized' }}</span>
-                        </div>
-                        <div>
-                            {% if plant.quantity == 0 %}
-                            <span class="badge bg-secondary">Out of Stock</span>
-                            {% elif plant.quantity < 5 %}
-                            <span class="badge bg-danger">{{ plant.quantity }} Left (Low)</span>
-                            {% else %}
-                            <span class="badge bg-success">{{ plant.quantity }} in Stock</span>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center py-2 my-2 border-top border-bottom">
-                        <span class="text-muted small">Price</span>
-                        <span class="fw-bold fs-6" style="color: #1b4332;">Rs. {{ '{:,.2f}'.format(plant.price) }}</span>
-                    </div>
-                    {% if plant.description %}
-                    <p class="text-secondary small mb-3">{{ plant.description }}</p>
-                    {% endif %}
-                    <div class="d-flex gap-2">
-                        <a href="/editPlant/{{ plant.plantId }}" class="btn btn-sm btn-outline-warning flex-fill text-dark fw-semibold">
-                            <i class="bi bi-pencil me-1"></i>Edit
-                        </a>
-                        <a href="/deletePlant/{{ plant.plantId }}" class="btn btn-sm btn-outline-danger flex-fill fw-semibold"
-                            onclick="return confirm('Are you sure you want to delete {{ plant.plantName }}?')">
-                            <i class="bi bi-trash me-1"></i>Delete
-                        </a>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-        {% else %}
-        <div class="text-center text-muted py-4">
-            <i class="bi bi-inbox me-2"></i>No plants found.
-        </div>
-        {% endif %}
-    </div>
-
-    <!-- Pagination Controls -->
+    <!-- Desktop Pagination -->
     {% if totalPages and totalPages > 1 %}
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-4 pt-3 border-top">
         <div class="text-muted small">
             Showing <strong>{{ (page - 1) * perPage + 1 }}</strong>–<strong>{{ [page * perPage, totalCount]|min }}</strong> of <strong>{{ totalCount }}</strong> plants
+        </div>
+        <nav aria-label="Page navigation">
+            <ul class="pagination pagination-sm mb-0">
+                <li class="page-item {% if page <= 1 %}disabled{% endif %}">
+                    <a class="page-link" href="?page={{ page - 1 }}" aria-label="Previous">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+                {% for p in range(1, totalPages + 1) %}
+                <li class="page-item {% if p == page %}active{% endif %}">
+                    <a class="page-link" href="?page={{ p }}">{{ p }}</a>
+                </li>
+                {% endfor %}
+                <li class="page-item {% if page >= totalPages %}disabled{% endif %}">
+                    <a class="page-link" href="?page={{ page + 1 }}" aria-label="Next">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Mobile View: Standalone Individual Cards -->
+<div class="d-block d-md-none">
+    <div class="d-flex justify-content-between align-items-center mb-3 px-1">
+        <h5 class="mb-0" style="color: #1b4332;">All Plants</h5>
+        <span class="badge bg-light text-dark border">Total: {{ totalCount }}</span>
+    </div>
+
+    {% if allPlants %}
+    <div class="d-flex flex-column gap-3">
+        {% for plant in allPlants %}
+        <div class="card p-3 border-0 shadow-sm" style="border-radius: 12px; background: white;">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                    <span class="text-muted small">#{{ plant.plantId }}</span>
+                    <h6 class="fw-bold mb-1" style="color: #1b4332;">{{ plant.plantName }}</h6>
+                    <span class="badge bg-light text-dark border">{{ plant.categoryName or 'Uncategorized' }}</span>
+                </div>
+                <div>
+                    {% if plant.quantity == 0 %}
+                    <span class="badge bg-secondary">Out of Stock</span>
+                    {% elif plant.quantity < 5 %}
+                    <span class="badge bg-danger">{{ plant.quantity }} Left (Low)</span>
+                    {% else %}
+                    <span class="badge bg-success">{{ plant.quantity }} in Stock</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center py-2 my-2 border-top border-bottom">
+                <span class="text-muted small">Price</span>
+                <span class="fw-bold fs-6" style="color: #1b4332;">Rs. {{ '{:,.2f}'.format(plant.price) }}</span>
+            </div>
+            {% if plant.description %}
+            <p class="text-secondary small mb-3">{{ plant.description }}</p>
+            {% endif %}
+            <div class="d-flex gap-2">
+                <a href="/editPlant/{{ plant.plantId }}" class="btn btn-sm btn-outline-warning flex-fill text-dark fw-semibold">
+                    <i class="bi bi-pencil me-1"></i>Edit
+                </a>
+                <a href="/deletePlant/{{ plant.plantId }}" class="btn btn-sm btn-outline-danger flex-fill fw-semibold"
+                    onclick="return confirm('Are you sure you want to delete {{ plant.plantName }}?')">
+                    <i class="bi bi-trash me-1"></i>Delete
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="card p-4 text-center text-muted border-0 shadow-sm" style="border-radius: 12px;">
+        <i class="bi bi-inbox me-2"></i>No plants found.
+    </div>
+    {% endif %}
+
+    <!-- Mobile Pagination -->
+    {% if totalPages and totalPages > 1 %}
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3 pt-3 border-top px-1">
+        <div class="text-muted small">
+            Page <strong>{{ page }}</strong> of <strong>{{ totalPages }}</strong>
         </div>
         <nav aria-label="Page navigation">
             <ul class="pagination pagination-sm mb-0">

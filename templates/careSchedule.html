@@ -39,102 +39,99 @@
 </div>
 {% endif %}
 
-<div class="card p-4">
+<!-- Desktop View: Table inside Card -->
+<div class="card p-4 d-none d-md-block border-0 shadow-sm" style="border-radius: 12px;">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="mb-0" style="color:#1b4332;">All Care Schedules</h5>
         <span class="badge bg-light text-dark border">Total: {{ schedules|length }}</span>
     </div>
-
-    <!-- Desktop View: Table (Hidden on Mobile) -->
-    <div class="d-none d-md-block">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mt-2">
-                <thead>
-                    <tr>
-                        <th>Plant</th>
-                        <th>Care Type</th>
-                        <th>Last Done</th>
-                        <th>Next Check</th>
-                        <th>Notes</th>
-                        <th>Action</th>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mt-2">
+            <thead>
+                <tr>
+                    <th>Plant</th>
+                    <th>Care Type</th>
+                    <th>Last Done</th>
+                    <th>Next Check</th>
+                    <th>Notes</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if schedules %}
+                {% for c in schedules %}
+                {% if c.nextCheck < today %} <tr class="table-danger">
+                    {% elif c.nextCheck == today %}
+                    <tr class="table-warning">
+                        {% else %}
+                    <tr class="table-success">
+                        {% endif %}
+                        <td><strong>{{ c.plantName }}</strong></td>
+                        <td><span class="badge bg-light text-dark border">{{ c.careType }}</span></td>
+                        <td>{{ c.lastCheck if c.lastCheck else '—' }}</td>
+                        <td><strong>{{ c.nextCheck }}</strong></td>
+                        <td>{{ c.notes or '—' }}</td>
+                        <td>
+                            <a href="/markCareDone/{{ c.careId }}" class="btn btn-sm btn-flora">
+                                <i class="bi bi-check2-circle me-1"></i>Mark Done
+                            </a>
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    {% if schedules %}
-                    {% for c in schedules %}
-                    {% if c.nextCheck < today %} <tr class="table-danger">
-                        {% elif c.nextCheck == today %}
-                        <tr class="table-warning">
-                            {% else %}
-                        <tr class="table-success">
-                            {% endif %}
-                            <td><strong>{{ c.plantName }}</strong></td>
-                            <td><span class="badge bg-light text-dark border">{{ c.careType }}</span></td>
-                            <td>{{ c.lastCheck if c.lastCheck else '—' }}</td>
-                            <td><strong>{{ c.nextCheck }}</strong></td>
-                            <td>{{ c.notes or '—' }}</td>
-                            <td>
-                                <a href="/markCareDone/{{ c.careId }}" class="btn btn-sm btn-flora">
-                                    <i class="bi bi-check2-circle me-1"></i>Mark Done
-                                </a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                        {% else %}
-                        <tr>
-                            <td colspan="6" class="text-center text-muted py-3">No care schedules found.</td>
-                        </tr>
-                        {% endif %}
-                </tbody>
-            </table>
-        </div>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-3">No care schedules found.</td>
+                    </tr>
+                    {% endif %}
+            </tbody>
+        </table>
     </div>
+</div>
 
-    <!-- Mobile View: Cards (Hidden on Desktop) -->
-    <div class="d-block d-md-none">
-        {% if schedules %}
-        <div class="row g-3">
-            {% for c in schedules %}
-            <div class="col-12">
-                <div class="card p-3 shadow-sm border border-start border-4 {% if c.nextCheck < today %}border-danger{% elif c.nextCheck == today %}border-warning{% else %}border-success{% endif %}">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        <div>
-                            <div class="fw-bold text-dark fs-6">{{ c.plantName }}</div>
-                            <span class="badge bg-light text-dark border"><i class="bi bi-droplet-half me-1"></i>{{ c.careType }}</span>
-                        </div>
-                        {% if c.nextCheck < today %}
-                        <span class="badge bg-danger">Overdue</span>
-                        {% elif c.nextCheck == today %}
-                        <span class="badge bg-warning text-dark">Due Today</span>
-                        {% else %}
-                        <span class="badge bg-success">Upcoming</span>
-                        {% endif %}
-                    </div>
-                    <div class="row g-1 small text-secondary mb-2">
-                        <div class="col-6">
-                            <strong>Last Done:</strong> {{ c.lastCheck if c.lastCheck else '—' }}
-                        </div>
-                        <div class="col-6">
-                            <strong>Next Check:</strong> {{ c.nextCheck }}
-                        </div>
-                        {% if c.notes %}
-                        <div class="col-12">
-                            <strong>Notes:</strong> {{ c.notes }}
-                        </div>
-                        {% endif %}
-                    </div>
-                    <div class="pt-2 border-top text-end">
-                        <a href="/markCareDone/{{ c.careId }}" class="btn btn-sm btn-flora w-100">
-                            <i class="bi bi-check2-circle me-1"></i>Mark Done
-                        </a>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-        {% else %}
-        <div class="text-center text-muted py-4">No care schedules found.</div>
-        {% endif %}
+<!-- Mobile View: Standalone Individual Cards -->
+<div class="d-block d-md-none">
+    <div class="d-flex justify-content-between align-items-center mb-2 px-1">
+        <h5 class="mb-0 fw-bold" style="color:#1b4332;">Care Schedules</h5>
+        <span class="badge bg-light text-dark border">Total: {{ schedules|length }}</span>
     </div>
+    {% if schedules %}
+    {% for c in schedules %}
+    <div class="card p-3 mb-3 shadow-sm border-0" style="border-radius: 12px; background: white;">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+            <div>
+                <div class="fw-bold text-dark fs-6">{{ c.plantName }}</div>
+                <span class="badge bg-light text-dark border"><i class="bi bi-droplet-half me-1"></i>{{ c.careType }}</span>
+            </div>
+            {% if c.nextCheck < today %}
+            <span class="badge bg-danger">Overdue</span>
+            {% elif c.nextCheck == today %}
+            <span class="badge bg-warning text-dark">Due Today</span>
+            {% else %}
+            <span class="badge bg-success">Upcoming</span>
+            {% endif %}
+        </div>
+        <div class="row g-1 small text-secondary mb-3">
+            <div class="col-6">
+                <strong>Last Done:</strong> {{ c.lastCheck if c.lastCheck else '—' }}
+            </div>
+            <div class="col-6">
+                <strong>Next Check:</strong> {{ c.nextCheck }}
+            </div>
+            {% if c.notes %}
+            <div class="col-12 mt-1">
+                <strong>Notes:</strong> {{ c.notes }}
+            </div>
+            {% endif %}
+        </div>
+        <div class="pt-2 border-top text-end">
+            <a href="/markCareDone/{{ c.careId }}" class="btn btn-sm btn-flora w-100">
+                <i class="bi bi-check2-circle me-1"></i>Mark Done
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="card p-4 text-center text-muted border-0 shadow-sm" style="border-radius: 12px;">No care schedules found.</div>
+    {% endif %}
 </div>
 {% endblock %}

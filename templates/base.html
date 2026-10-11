@@ -8,15 +8,25 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <style>
+        :root {
+            --flora-primary: #1b4332;
+            --flora-secondary: #2d6a4f;
+            --flora-accent: #40916c;
+            --flora-light: #e8f5e9;
+            --flora-bg: #f4f7f5;
+            --flora-surface: #ffffff;
+            --flora-border: #e2ece5;
+        }
+
         body {
-            background: #f0f7f4;
-            font-family: 'Segoe UI', sans-serif;
+            background: var(--flora-bg);
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
             overflow-x: hidden;
         }
 
         .sidebar {
             height: 100vh;
-            background: linear-gradient(180deg, #1b4332, #40916c);
+            background: linear-gradient(180deg, #1b4332, #2d6a4f);
             padding: 20px 0 0 0;
             position: fixed;
             width: 220px;
@@ -27,12 +37,23 @@
             overflow-y: auto;
         }
 
-        .sidebar .logoText {
-            color: white;
-            font-size: 1.4rem;
-            font-weight: 700;
+        .sidebar .sidebar-logo-container {
             text-align: center;
-            padding: 10px 0 20px 0;
+            padding: 10px 10px 20px 10px;
+        }
+
+        .sidebar .sidebar-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.45);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+            transition: transform 0.2s ease;
+        }
+
+        .sidebar .sidebar-logo:hover {
+            transform: scale(1.05);
         }
 
         .sidebar a {
@@ -235,7 +256,12 @@
     <div class="sidebar-overlay" onclick="toggleSidebar()" ontouchmove="event.preventDefault()"></div>
 
     <div class="sidebar" id="sidebar">
-        <div class="logoText">FloraFlow</div>
+        <div class="sidebar-logo-container">
+            <a href="/dashboard" class="d-inline-block text-decoration-none p-0">
+                <img src="{{ url_for('static', filename='logo.jpeg') }}" alt="FloraFlow" class="sidebar-logo">
+            </a>
+            <div class="text-white small fw-bold mt-2" style="letter-spacing: 1.5px; font-size: 0.8rem;">FLORAFLOW</div>
+        </div>
 
         <!-- Dashboard Link Logic -->
         {% if session.get('role') == 'admin' %}
@@ -338,7 +364,5 @@
         }
     </script>
     {% block extraScripts %}{% endblock %}
-
 </body>
-
-</html>l>
+</html>

@@ -59,8 +59,9 @@
 <body>
     <div class="loginCard">
         <div class="text-center mb-4">
-            <div class="logoText"> Flora<span class="logoLeaf">Flow</span></div>
-            <p class="text-muted mt-1">Nursery Management System</p>
+            <img src="{{ url_for('static', filename='logo.jpeg') }}" alt="FloraFlow Logo" style="width: 76px; height: 76px; border-radius: 50%; object-fit: cover; box-shadow: 0 4px 16px rgba(27,67,50,0.25); border: 2px solid #e8f5e9;" class="mb-3">
+            <div class="logoText">Flora<span class="logoLeaf">Flow</span></div>
+            <p class="text-muted mt-1 small">Nursery Management System</p>
         </div>
 
         {% with messages = get_flashed_messages(with_categories=true) %}

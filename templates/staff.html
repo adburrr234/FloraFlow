@@ -56,176 +56,173 @@
     </form>
 </div>
 
-<div class="card p-4">
+<!-- Desktop View: Table inside Card -->
+<div class="card p-4 d-none d-md-block border-0 shadow-sm" style="border-radius: 12px;">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="mb-0" style="color: #1b4332;">All Staff Members</h5>
         <span class="badge bg-light text-dark border">Total: {{ allStaff|length }}</span>
     </div>
-
-    <!-- Desktop View: Table (Hidden on Mobile) -->
-    <div class="d-none d-md-block">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Username</th>
-                        <th>Role</th>
-                        <th>Designation</th>
-                        <th>Salary</th>
-                        <th>Phone</th>
-                        <th>Hire Date</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for s in allStaff %}
-                    <tr>
-                        <td>{{ s.staffId }}</td>
-                        <td>
-                            {{ s.fullName }}
-                            {% if s.staffId == currentStaffId %}
-                            <span class="badge bg-info ms-1">You</span>
-                            {% endif %}
-                        </td>
-                        <td>{{ s.username }}</td>
-                        <td>
-                            {% if s.role == 'admin' %}
-                            <span class="badge bg-success">Admin</span>
-                            {% else %}
-                            <span class="badge bg-secondary">Staff</span>
-                            {% endif %}
-                        </td>
-                        <td>{{ s.designation or '—' }}</td>
-                        <td>{% if s.salary %}Rs. {{ '{:,.0f}'.format(s.salary) }}{% else %}—{% endif %}</td>
-                        <td>{{ s.phone or '—' }}</td>
-                        <td>{{ s.hireDate.strftime('%d %b %Y') if s.hireDate else '—' }}</td>
-                        <td>
-                            {% if s.isActive == 1 %}
-                            <span class="badge bg-success">Active</span>
-                            {% else %}
-                            <span class="badge bg-danger">Inactive</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <a href="/editStaff/{{ s.staffId }}" class="btn btn-sm btn-warning" title="Edit Profile">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-
-                            {% if s.staffId != currentStaffId %}
-
-                            <form method="POST" action="/resetPassword/{{ s.staffId }}" style="display:inline;">
-                                <button type="submit" class="btn btn-sm btn-dark" title="Reset Password"
-                                    onclick="return confirm('Reset password for {{ s.fullName }} to the default: staff1234?')">
-                                    <i class="bi bi-key"></i>
-                                </button>
-                            </form>
-
-                            {% if s.isActive == 1 %}
-                            <a href="/toggleStaff/{{ s.staffId }}" class="btn btn-sm btn-danger" title="Deactivate Account"
-                                onclick="return confirm('Deactivate {{ s.fullName }}?')">
-                                <i class="bi bi-person-x"></i>
-                            </a>
-                            {% else %}
-                            <a href="/toggleStaff/{{ s.staffId }}" class="btn btn-sm btn-success" title="Reactivate Account"
-                                onclick="return confirm('Reactivate {{ s.fullName }}?')">
-                                <i class="bi bi-person-check"></i>
-                            </a>
-                            {% endif %}
-
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Mobile View: Cards (Hidden on Desktop) -->
-    <div class="d-block d-md-none">
-        {% if allStaff %}
-        <div class="row g-3">
-            {% for s in allStaff %}
-            <div class="col-12">
-                <div class="card p-3 shadow-sm border border-start border-4 {% if s.isActive == 1 %}border-success{% else %}border-danger{% endif %}">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        <div>
-                            <div class="fw-bold fs-6 text-dark">
-                                {{ s.fullName }}
-                                {% if s.staffId == currentStaffId %}
-                                <span class="badge bg-info ms-1">You</span>
-                                {% endif %}
-                            </div>
-                            <small class="text-muted">@{{ s.username }} &bull; ID #{{ s.staffId }}</small>
-                        </div>
-                        <div class="d-flex flex-column align-items-end gap-1">
-                            {% if s.role == 'admin' %}
-                            <span class="badge bg-success">Admin</span>
-                            {% else %}
-                            <span class="badge bg-secondary">Staff</span>
-                            {% endif %}
-                            {% if s.isActive == 1 %}
-                            <span class="badge bg-success-subtle text-success border border-success">Active</span>
-                            {% else %}
-                            <span class="badge bg-danger-subtle text-danger border border-danger">Inactive</span>
-                            {% endif %}
-                        </div>
-                    </div>
-
-                    <div class="row g-2 small text-secondary mb-3">
-                        <div class="col-6">
-                            <strong>Designation:</strong> {{ s.designation or '—' }}
-                        </div>
-                        <div class="col-6">
-                            <strong>Salary:</strong> {% if s.salary %}Rs. {{ '{:,.0f}'.format(s.salary) }}{% else %}—{% endif %}
-                        </div>
-                        <div class="col-6">
-                            <strong>Phone:</strong> {{ s.phone or '—' }}
-                        </div>
-                        <div class="col-6">
-                            <strong>Hired:</strong> {{ s.hireDate.strftime('%d %b %Y') if s.hireDate else '—' }}
-                        </div>
-                        {% if s.email %}
-                        <div class="col-12">
-                            <strong>Email:</strong> {{ s.email }}
-                        </div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Role</th>
+                    <th>Designation</th>
+                    <th>Salary</th>
+                    <th>Phone</th>
+                    <th>Hire Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in allStaff %}
+                <tr>
+                    <td>{{ s.staffId }}</td>
+                    <td>
+                        {{ s.fullName }}
+                        {% if s.staffId == currentStaffId %}
+                        <span class="badge bg-info ms-1">You</span>
                         {% endif %}
-                    </div>
-
-                    <div class="d-flex gap-2 pt-2 border-top flex-wrap">
-                        <a href="/editStaff/{{ s.staffId }}" class="btn btn-sm btn-outline-warning flex-fill" title="Edit Profile">
-                            <i class="bi bi-pencil me-1"></i>Edit
+                    </td>
+                    <td>{{ s.username }}</td>
+                    <td>
+                        {% if s.role == 'admin' %}
+                        <span class="badge bg-success">Admin</span>
+                        {% else %}
+                        <span class="badge bg-secondary">Staff</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ s.designation or '—' }}</td>
+                    <td>{% if s.salary %}Rs. {{ '{:,.0f}'.format(s.salary) }}{% else %}—{% endif %}</td>
+                    <td>{{ s.phone or '—' }}</td>
+                    <td>{{ s.hireDate.strftime('%d %b %Y') if s.hireDate else '—' }}</td>
+                    <td>
+                        {% if s.isActive == 1 %}
+                        <span class="badge bg-success">Active</span>
+                        {% else %}
+                        <span class="badge bg-danger">Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="/editStaff/{{ s.staffId }}" class="btn btn-sm btn-warning" title="Edit Profile">
+                            <i class="bi bi-pencil"></i>
                         </a>
+
                         {% if s.staffId != currentStaffId %}
-                        <form method="POST" action="/resetPassword/{{ s.staffId }}" class="flex-fill">
-                            <button type="submit" class="btn btn-sm btn-outline-dark w-100" title="Reset Password"
-                                onclick="return confirm('Reset password for {{ s.fullName }} to default: staff1234?')">
-                                <i class="bi bi-key me-1"></i>Reset Pass
+
+                        <form method="POST" action="/resetPassword/{{ s.staffId }}" style="display:inline;">
+                            <button type="submit" class="btn btn-sm btn-dark" title="Reset Password"
+                                onclick="return confirm('Reset password for {{ s.fullName }} to the default: staff1234?')">
+                                <i class="bi bi-key"></i>
                             </button>
                         </form>
+
                         {% if s.isActive == 1 %}
-                        <a href="/toggleStaff/{{ s.staffId }}" class="btn btn-sm btn-outline-danger flex-fill"
+                        <a href="/toggleStaff/{{ s.staffId }}" class="btn btn-sm btn-danger" title="Deactivate Account"
                             onclick="return confirm('Deactivate {{ s.fullName }}?')">
-                            <i class="bi bi-person-x me-1"></i>Deactivate
+                            <i class="bi bi-person-x"></i>
                         </a>
                         {% else %}
-                        <a href="/toggleStaff/{{ s.staffId }}" class="btn btn-sm btn-outline-success flex-fill"
+                        <a href="/toggleStaff/{{ s.staffId }}" class="btn btn-sm btn-success" title="Reactivate Account"
                             onclick="return confirm('Reactivate {{ s.fullName }}?')">
-                            <i class="bi bi-person-check me-1"></i>Reactivate
+                            <i class="bi bi-person-check"></i>
                         </a>
                         {% endif %}
+
                         {% endif %}
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-        {% else %}
-        <div class="text-center text-muted py-4">No staff members found.</div>
-        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
+</div>
+
+<!-- Mobile View: Standalone Individual Cards -->
+<div class="d-block d-md-none">
+    <div class="d-flex justify-content-between align-items-center mb-2 px-1">
+        <h5 class="mb-0 fw-bold" style="color: #1b4332;">Staff Members</h5>
+        <span class="badge bg-light text-dark border">Total: {{ allStaff|length }}</span>
+    </div>
+    {% if allStaff %}
+    {% for s in allStaff %}
+    <div class="card p-3 mb-3 shadow-sm border-0" style="border-radius: 12px; background: white;">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+            <div>
+                <div class="fw-bold fs-6 text-dark">
+                    {{ s.fullName }}
+                    {% if s.staffId == currentStaffId %}
+                    <span class="badge bg-info ms-1">You</span>
+                    {% endif %}
+                </div>
+                <small class="text-muted">@{{ s.username }} &bull; ID #{{ s.staffId }}</small>
+            </div>
+            <div class="d-flex flex-column align-items-end gap-1">
+                {% if s.role == 'admin' %}
+                <span class="badge bg-success">Admin</span>
+                {% else %}
+                <span class="badge bg-secondary">Staff</span>
+                {% endif %}
+                {% if s.isActive == 1 %}
+                <span class="badge bg-success-subtle text-success">Active</span>
+                {% else %}
+                <span class="badge bg-secondary">Inactive</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row g-2 small text-secondary mb-3">
+            <div class="col-6">
+                <strong>Designation:</strong> {{ s.designation or '—' }}
+            </div>
+            <div class="col-6">
+                <strong>Salary:</strong> {% if s.salary %}Rs. {{ '{:,.0f}'.format(s.salary) }}{% else %}—{% endif %}
+            </div>
+            <div class="col-6">
+                <strong>Phone:</strong> {{ s.phone or '—' }}
+            </div>
+            <div class="col-6">
+                <strong>Hired:</strong> {{ s.hireDate.strftime('%d %b %Y') if s.hireDate else '—' }}
+            </div>
+            {% if s.email %}
+            <div class="col-12">
+                <strong>Email:</strong> {{ s.email }}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="d-flex gap-2 pt-2 border-top flex-wrap">
+            <a href="/editStaff/{{ s.staffId }}" class="btn btn-sm btn-outline-warning flex-fill" title="Edit Profile">
+                <i class="bi bi-pencil me-1"></i>Edit
+            </a>
+            {% if s.staffId != currentStaffId %}
+            <form method="POST" action="/resetPassword/{{ s.staffId }}" class="flex-fill">
+                <button type="submit" class="btn btn-sm btn-outline-dark w-100" title="Reset Password"
+                    onclick="return confirm('Reset password for {{ s.fullName }} to default: staff1234?')">
+                    <i class="bi bi-key me-1"></i>Reset Pass
+                </button>
+            </form>
+            {% if s.isActive == 1 %}
+            <a href="/toggleStaff/{{ s.staffId }}" class="btn btn-sm btn-outline-danger flex-fill"
+                onclick="return confirm('Deactivate {{ s.fullName }}?')">
+                <i class="bi bi-person-x me-1"></i>Deactivate
+            </a>
+            {% else %}
+            <a href="/toggleStaff/{{ s.staffId }}" class="btn btn-sm btn-outline-success flex-fill"
+                onclick="return confirm('Reactivate {{ s.fullName }}?')">
+                <i class="bi bi-person-check me-1"></i>Reactivate
+            </a>
+            {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="card p-4 text-center text-muted border-0 shadow-sm" style="border-radius: 12px;">No staff members found.</div>
+    {% endif %}
 </div>
 {% endblock %}

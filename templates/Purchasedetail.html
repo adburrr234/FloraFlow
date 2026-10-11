@@ -23,74 +23,71 @@
     </div>
 </div>
 
-<div class="card p-4 mb-4">
+<!-- Desktop View: Table inside Card -->
+<div class="card p-4 mb-4 d-none d-md-block border-0 shadow-sm" style="border-radius: 12px;">
     <h5 style="color: #1b4332;">Items Purchased</h5>
-    <!-- Desktop View: Table -->
-    <div class="d-none d-md-block">
-        <div class="table-responsive">
-            <table class="table mt-2 align-middle">
-                <thead>
-                    <tr>
-                        <th>Item</th>
-                        <th>Type</th>
-                        <th>Quantity</th>
-                        <th>Unit Cost</th>
-                        <th>Subtotal</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in purchaseItems %}
-                    <tr>
-                        <td><strong>{{ item.itemName }}</strong></td>
-                        <td>
-                            {% if item.itemType == 'plant' %}
-                            <span class="badge bg-success">Plant</span>
-                            {% else %}
-                            <span class="badge bg-warning text-dark">Accessory</span>
-                            {% endif %}
-                        </td>
-                        <td>{{ item.quantity }}</td>
-                        <td>Rs. {{ '{:,.2f}'.format(item.unitCost) }}</td>
-                        <td><strong class="text-success">Rs. {{ '{:,.2f}'.format(item.subtotal) }}</strong></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="4" class="text-end fw-bold">Total Cost:</td>
-                        <td class="fw-bold fs-5 text-success">Rs. {{ '{:,.2f}'.format(purchase.totalCost) }}</td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
-    </div>
-
-    <!-- Mobile View: Cards -->
-    <div class="d-block d-md-none">
-        <div class="row g-2 mt-1">
-            {% for item in purchaseItems %}
-            <div class="col-12">
-                <div class="card p-3 shadow-sm border">
-                    <div class="d-flex justify-content-between align-items-center mb-1">
-                        <strong class="text-dark">{{ item.itemName }}</strong>
+    <div class="table-responsive">
+        <table class="table mt-2 align-middle">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Type</th>
+                    <th>Quantity</th>
+                    <th>Unit Cost</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in purchaseItems %}
+                <tr>
+                    <td><strong>{{ item.itemName }}</strong></td>
+                    <td>
                         {% if item.itemType == 'plant' %}
                         <span class="badge bg-success">Plant</span>
                         {% else %}
                         <span class="badge bg-warning text-dark">Accessory</span>
                         {% endif %}
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center text-muted small">
-                        <span>Qty: {{ item.quantity }} &bull; Rs. {{ '{:,.2f}'.format(item.unitCost) }}</span>
-                        <span class="fw-bold text-success fs-6">Rs. {{ '{:,.2f}'.format(item.subtotal) }}</span>
-                    </div>
-                </div>
+                    </td>
+                    <td>{{ item.quantity }}</td>
+                    <td>Rs. {{ '{:,.2f}'.format(item.unitCost) }}</td>
+                    <td><strong class="text-success">Rs. {{ '{:,.2f}'.format(item.subtotal) }}</strong></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4" class="text-end fw-bold">Total Cost:</td>
+                    <td class="fw-bold fs-5 text-success">Rs. {{ '{:,.2f}'.format(purchase.totalCost) }}</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<!-- Mobile View: Standalone Individual Cards -->
+<div class="d-block d-md-none mb-4">
+    <h5 class="mb-3 px-1" style="color: #1b4332;">Items Purchased</h5>
+    <div class="d-flex flex-column gap-2">
+        {% for item in purchaseItems %}
+        <div class="card p-3 shadow-sm border-0" style="border-radius: 12px; background: white;">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <strong class="text-dark">{{ item.itemName }}</strong>
+                {% if item.itemType == 'plant' %}
+                <span class="badge bg-success">Plant</span>
+                {% else %}
+                <span class="badge bg-warning text-dark">Accessory</span>
+                {% endif %}
             </div>
-            {% endfor %}
+            <div class="d-flex justify-content-between align-items-center text-muted small pt-2 border-top">
+                <span>Qty: {{ item.quantity }} &bull; Rs. {{ '{:,.2f}'.format(item.unitCost) }}</span>
+                <span class="fw-bold text-success fs-6">Rs. {{ '{:,.2f}'.format(item.subtotal) }}</span>
+            </div>
         </div>
-        <div class="card p-3 mt-3 bg-light border-0 d-flex flex-row justify-content-between align-items-center">
-            <span class="fw-bold">Total Cost:</span>
-            <span class="fw-bold fs-5 text-success">Rs. {{ '{:,.2f}'.format(purchase.totalCost) }}</span>
-        </div>
+        {% endfor %}
+    </div>
+    <div class="card p-3 mt-3 shadow-sm border-0 d-flex flex-row justify-content-between align-items-center" style="border-radius: 12px; background: white;">
+        <span class="fw-bold text-dark">Total Cost:</span>
+        <span class="fw-bold fs-5 text-success">Rs. {{ '{:,.2f}'.format(purchase.totalCost) }}</span>
     </div>
 </div>
 
