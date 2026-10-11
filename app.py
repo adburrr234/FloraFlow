@@ -407,15 +407,29 @@ def plants():
     if 'staffId' not in session or session['role'] != 'admin':
         return redirect(url_for('login'))
 
+    page = request.args.get('page', 1, type=int)
+    if page < 1:
+        page = 1
+    per_page = 10
+
     conn = getDbConnection()
     try:
         cursor = conn.cursor()
+
+        cursor.execute("SELECT COUNT(*) AS total FROM Plants")
+        total_count = cursor.fetchone()['total']
+        total_pages = max(1, (total_count + per_page - 1) // per_page)
+        if page > total_pages:
+            page = total_pages
+        offset = (page - 1) * per_page
+
         cursor.execute("""
             SELECT p.*, c.categoryName 
             FROM Plants p 
             LEFT JOIN PlantCategories c ON p.categoryId = c.categoryId
             ORDER BY p.plantId
-        """)
+            LIMIT %s OFFSET %s
+        """, (per_page, offset))
         allPlants = cursor.fetchall()
 
         cursor.execute("SELECT * FROM PlantCategories ORDER BY categoryName")
@@ -428,7 +442,14 @@ def plants():
     finally:
         conn.close()
 
-    return render_template('plants.html', allPlants=allPlants, categories=categories, unreadAlerts=unreadAlerts)
+    return render_template('plants.html', 
+                           allPlants=allPlants, 
+                           categories=categories, 
+                           unreadAlerts=unreadAlerts,
+                           page=page,
+                           totalPages=total_pages,
+                           totalCount=total_count,
+                           perPage=per_page)
 
 
 @app.route('/addPlant', methods=['POST'])
@@ -526,10 +547,27 @@ def accessories():
     if 'staffId' not in session or session['role'] != 'admin':
         return redirect(url_for('login'))
 
+    page = request.args.get('page', 1, type=int)
+    if page < 1:
+        page = 1
+    per_page = 10
+
     conn = getDbConnection()
     try:
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM Accessories ORDER BY accessoryId")
+
+        cursor.execute("SELECT COUNT(*) AS total FROM Accessories")
+        total_count = cursor.fetchone()['total']
+        total_pages = max(1, (total_count + per_page - 1) // per_page)
+        if page > total_pages:
+            page = total_pages
+        offset = (page - 1) * per_page
+
+        cursor.execute("""
+            SELECT * FROM Accessories 
+            ORDER BY accessoryId
+            LIMIT %s OFFSET %s
+        """, (per_page, offset))
         allAccessories = cursor.fetchall()
 
         cursor.execute(
@@ -539,7 +577,13 @@ def accessories():
     finally:
         conn.close()
 
-    return render_template('accessories.html', allAccessories=allAccessories, unreadAlerts=unreadAlerts)
+    return render_template('accessories.html', 
+                           allAccessories=allAccessories, 
+                           unreadAlerts=unreadAlerts,
+                           page=page,
+                           totalPages=total_pages,
+                           totalCount=total_count,
+                           perPage=per_page)
 
 
 @app.route('/addAccessory', methods=['POST'])

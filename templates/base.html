@@ -104,6 +104,39 @@
             margin-left: 6px;
         }
 
+        .topbar-icon-box {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            background: #e8f5e9;
+            color: #1b4332;
+            border-radius: 10px;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+        }
+
+        .topbar-icon-box:empty {
+            display: none;
+        }
+
+        /* FloraFlow Pagination Styles */
+        .page-item.active .page-link {
+            background-color: #1b4332;
+            border-color: #1b4332;
+            color: white;
+        }
+
+        .page-link {
+            color: #1b4332;
+        }
+
+        .page-link:hover {
+            color: #40916c;
+        }
+
         /* Global Stat Card Styles for Dashboards */
         .statCard {
             background: white;
@@ -265,12 +298,17 @@
         <div class="topBar">
             <div class="topBar-content">
                 <div class="d-flex align-items-center">
-                    <button class="mobile-toggle" onclick="toggleSidebar()">
+                    <button class="mobile-toggle" onclick="toggleSidebar()" aria-label="Toggle Navigation">
                         <i class="bi bi-list"></i>
                     </button>
-                    <h4>{% block pageTitle %}{% endblock %}</h4>
+                    <h4 class="mb-0">{% block pageTitle %}{% endblock %}</h4>
                 </div>
-                <span class="text-muted d-none d-sm-block">Welcome, {{ session.get('fullName', 'Guest') }}</span>
+                <div class="d-flex align-items-center gap-3 ms-auto">
+                    <span class="text-muted d-none d-md-inline small">Welcome, {{ session.get('fullName', 'Guest') }}</span>
+                    <div class="topbar-icon-box">
+                        {% block pageIcon %}{% endblock %}
+                    </div>
+                </div>
             </div>
         </div>
 
