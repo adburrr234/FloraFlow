@@ -206,6 +206,12 @@ def page_not_found(e):
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if 'staffId' in session:
+        if session.get('role') == 'admin':
+            return redirect(url_for('dashboard'))
+        else:
+            return redirect(url_for('staffDashboard'))
+
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
