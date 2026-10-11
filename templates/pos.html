@@ -17,11 +17,13 @@
                 <div class="row mt-2">
                     <div class="col-md-6 mb-2">
                         <label class="form-label">Customer Name</label>
-                        <input type="text" name="customerName" class="form-control" placeholder="customer name">
+                        <input type="text" name="customerName" class="form-control" placeholder="customer name"
+                               value="{{ preloadedCustomer.name if preloadedCustomer else '' }}">
                     </div>
                     <div class="col-md-6 mb-2">
                         <label class="form-label">Phone</label>
-                        <input type="text" name="customerPhone" class="form-control" placeholder="03XX-XXXXXXX">
+                        <input type="text" name="customerPhone" class="form-control" placeholder="03XX-XXXXXXX"
+                               value="{{ preloadedCustomer.phone if preloadedCustomer else '' }}">
                     </div>
                 </div>
             </div>
@@ -124,7 +126,12 @@
 
 {% block extraScripts %}
 <script>
-    let cart = [];
+    let cart = {{ preloadedCart | tojson if preloadedCart else '[]' }};
+    if (cart.length > 0) {
+        document.addEventListener('DOMContentLoaded', function() {
+            renderCart();
+        });
+    }
 
     function addToCart(type) {
         let select = type === 'plant' ? document.getElementById('plantSelect') : document.getElementById('accessorySelect');

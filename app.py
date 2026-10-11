@@ -1,7 +1,6 @@
 from transactions import process_plant_sale, process_plant_purchase, process_accessory_purchase
-from flask import Flask, request, jsonify
-from flask import Flask, redirect, url_for
 import os
+import json
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify, Response
 import pymysql
 import pymysql.cursors
@@ -12,6 +11,8 @@ from fpdf import FPDF
 import calendar
 from dotenv import load_dotenv
 load_dotenv('text.env')
+
+from quotation_engine import calculate_quotation, save_quotation_to_db, build_quotation_pdf
 
 
 app = Flask(__name__)
@@ -704,11 +705,16 @@ def pos():
     finally:
         conn.close()
 
+    preloadedCart = session.pop('preloadedCart', None)
+    preloadedCustomer = session.pop('preloadedCustomer', None)
+
     return render_template('pos.html',
                            allPlants=allPlants,
                            allAccessories=allAccessories,
-                           llCustomers=allCustomers,
-                           unreadAlerts=unreadAlerts
+                           allCustomers=allCustomers,
+                           unreadAlerts=unreadAlerts,
+                           preloadedCart=preloadedCart,
+                           preloadedCustomer=preloadedCustomer
                            )
 
 
@@ -2050,8 +2056,158 @@ def add_sale():
 
     if success:
         return jsonify({"message": "Sale recorded and inventory updated!"}), 200
-    else:
-        return jsonify({"error": "Transaction failed, inventory was not changed."}), 500
+# ─── AI Botanical Quotation Engine ──────────────────────────────────────────
+
+@app.route('/quotation', methods=['GET', 'POST'])
+def quotation():
+    if 'staffId' not in session:
+        return redirect(url_for('login'))
+
+    conn = getDbConnection()
+    try:
+        cursor = conn.cursor()
+        generatedQuote = None
+        quotationDbId = None
+        formValues = None
+
+        if request.method == 'POST':
+            formValues = request.form.to_dict()
+            generatedQuote = calculate_quotation(cursor, request.form)
+            quotationDbId = save_quotation_to_db(conn, generatedQuote, staff_id=session.get('staffId'))
+            flash(f"AI Quotation {generatedQuote['quoteNumber']} generated and saved successfully!", "success")
+
+        # Fetch recent quotations
+        cursor.execute("""
+            SELECT quotationId, quoteNumber, customerName, spaceType, areaSqFt, grandTotal, createdAt
+            FROM Quotations
+            ORDER BY quotationId DESC
+            LIMIT 10
+        """)
+        recentQuotes = cursor.fetchall()
+
+        unreadAlerts = 0
+        if session.get('role') == 'admin':
+            cursor.execute("SELECT COUNT(*) AS total FROM SystemAlerts WHERE isRead = 0")
+            unreadAlerts = cursor.fetchone()['total']
+
+    finally:
+        conn.close()
+
+    return render_template('quotation.html',
+                           generatedQuote=generatedQuote,
+                           quotationDbId=quotationDbId,
+                           formValues=formValues,
+                           recentQuotes=recentQuotes,
+                           unreadAlerts=unreadAlerts)
+
+
+@app.route('/quotation/view/<int:quotationId>')
+def viewQuotation(quotationId):
+    if 'staffId' not in session:
+        return redirect(url_for('login'))
+
+    conn = getDbConnection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM Quotations WHERE quotationId = %s", (quotationId,))
+        quoteRow = cursor.fetchone()
+        if not quoteRow:
+            flash("Quotation not found.", "danger")
+            return redirect(url_for('quotation'))
+
+        generatedQuote = json.loads(quoteRow['quoteData'])
+
+        cursor.execute("""
+            SELECT quotationId, quoteNumber, customerName, spaceType, areaSqFt, grandTotal, createdAt
+            FROM Quotations
+            ORDER BY quotationId DESC
+            LIMIT 10
+        """)
+        recentQuotes = cursor.fetchall()
+
+        unreadAlerts = 0
+        if session.get('role') == 'admin':
+            cursor.execute("SELECT COUNT(*) AS total FROM SystemAlerts WHERE isRead = 0")
+            unreadAlerts = cursor.fetchone()['total']
+
+    finally:
+        conn.close()
+
+    return render_template('quotation.html',
+                           generatedQuote=generatedQuote,
+                           quotationDbId=quotationId,
+                           formValues=generatedQuote,
+                           recentQuotes=recentQuotes,
+                           unreadAlerts=unreadAlerts)
+
+
+@app.route('/quotation/pdf/<int:quotationId>')
+def quotationPdf(quotationId):
+    if 'staffId' not in session:
+        return redirect(url_for('login'))
+
+    conn = getDbConnection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM Quotations WHERE quotationId = %s", (quotationId,))
+        quoteRow = cursor.fetchone()
+        if not quoteRow:
+            flash("Quotation not found.", "danger")
+            return redirect(url_for('quotation'))
+
+        quote_data = json.loads(quoteRow['quoteData'])
+        pdf_bytes = build_quotation_pdf(quote_data)
+
+    finally:
+        conn.close()
+
+    return Response(
+        pdf_bytes,
+        mimetype='application/pdf',
+        headers={'Content-Disposition': f'inline; filename="{quote_data["quoteNumber"]}.pdf"'}
+    )
+
+
+@app.route('/quotation/toPos', methods=['POST'])
+def quotationToPos():
+    if 'staffId' not in session:
+        return redirect(url_for('login'))
+
+    quote_json = request.form.get('quoteDataJson')
+    if not quote_json:
+        flash("Invalid quotation data.", "danger")
+        return redirect(url_for('quotation'))
+
+    quote_data = json.loads(quote_json)
+
+    # Convert recommended plants and accessories into POS cart items
+    cart = []
+    for p in quote_data.get('plants', []):
+        cart.append({
+            'type': 'plant',
+            'id': str(p['id']),
+            'name': p['name'],
+            'price': float(p['unitPrice']),
+            'qty': int(p['qty'])
+        })
+
+    for a in quote_data.get('accessories', []):
+        cart.append({
+            'type': 'accessory',
+            'id': str(a['id']),
+            'name': a['name'],
+            'price': float(a['unitPrice']),
+            'qty': int(a['qty'])
+        })
+
+    session['preloadedCart'] = cart
+    session['preloadedCustomer'] = {
+        'name': quote_data.get('customerName', ''),
+        'phone': quote_data.get('customerPhone', '')
+    }
+
+    flash(f"Loaded {len(cart)} items from Quote {quote_data.get('quoteNumber')} into Point of Sale!", "success")
+    return redirect(url_for('pos'))
 
 
 @app.route('/<path:path>')
