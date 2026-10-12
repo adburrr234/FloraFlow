@@ -103,7 +103,11 @@
                     {% for r in topPlants %}
                     <tr>
                         <td><strong>{{ r.plantName }}</strong></td>
-                        <td><span class="badge bg-flora">{{ r.qty }}</span></td>
+                        <td><span class="badge bg-flora px-3 py-2 fw-semibold" style="font-size: 0.88rem;">{{ r.qty|int if r.qty is not none else 0 }} sold</span></td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="2" class="text-center text-muted py-3">No plant sales found for this date range.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -118,9 +122,11 @@
             <div class="col-12">
                 <div class="card p-3 shadow-sm border d-flex flex-row justify-content-between align-items-center">
                     <span class="fw-bold text-dark">{{ r.plantName }}</span>
-                    <span class="badge bg-flora px-3 py-2">{{ r.qty }} sold</span>
+                    <span class="badge bg-flora px-3 py-2 fw-semibold">{{ r.qty|int if r.qty is not none else 0 }} sold</span>
                 </div>
             </div>
+            {% else %}
+            <div class="col-12 text-center text-muted py-3">No plant sales found for this date range.</div>
             {% endfor %}
         </div>
     </div>
