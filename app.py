@@ -1,7 +1,7 @@
 from transactions import process_plant_sale, process_plant_purchase, process_accessory_purchase
 import os
 import json
-from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify, Response
+from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify, Response, send_from_directory
 import pymysql
 import pymysql.cursors
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -2208,6 +2208,19 @@ def quotationToPos():
 
     flash(f"Loaded {len(cart)} items from Quote {quote_data.get('quoteNumber')} into Point of Sale!", "success")
     return redirect(url_for('pos'))
+
+
+@app.route('/sw.js')
+def service_worker():
+    response = send_from_directory('static', 'sw.js', mimetype='application/javascript')
+    response.headers['Service-Worker-Allowed'] = '/'
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    return response
+
+
+@app.route('/offline')
+def offline():
+    return render_template('offline.html')
 
 
 @app.route('/<path:path>')

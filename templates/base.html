@@ -5,28 +5,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FloraFlow — {% block title %}{% endblock %}</title>
+
+    <!-- PWA Web App Manifest & Mobile Shell Meta -->
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="theme-color" content="#0F2F24">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="FloraFlow">
+    <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/static/icons/icon-192x192.png">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         :root {
-            --flora-primary: #1b4332;
-            --flora-secondary: #2d6a4f;
-            --flora-accent: #40916c;
-            --flora-light: #e8f5e9;
-            --flora-bg: #f4f7f5;
-            --flora-surface: #ffffff;
-            --flora-border: #e2ece5;
+            --flora-primary: #0F2F24;       /* Midnight Spruce */
+            --flora-secondary: #1B4D3E;     /* Deep Hunter */
+            --flora-accent: #10B981;        /* Emerald Spark */
+            --flora-highlight: #E5A93C;     /* Warm Amber */
+            --flora-light: #EBF3EF;         /* Soft Mint Whisper */
+            --flora-bg: #F4F7F5;            /* Whisper Sage Canvas */
+            --flora-surface: #FFFFFF;       /* Crisp Paper */
+            --flora-border: #E1EBE4;        /* Slate Frost */
+            --flora-text-main: #0F172A;     /* Deep Charcoal */
+            --flora-text-muted: #64748B;    /* Slate Gray */
         }
 
         body {
             background: var(--flora-bg);
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            color: var(--flora-text-main);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
         .sidebar {
             height: 100vh;
-            background: linear-gradient(180deg, #1b4332, #2d6a4f);
+            background: linear-gradient(180deg, #0F2F24 0%, #163B2E 100%);
             padding: 20px 0 0 0;
             position: fixed;
             width: 220px;
@@ -37,6 +53,7 @@
             overflow-y: auto;
             -ms-overflow-style: none;  /* IE and Edge */
             scrollbar-width: none;  /* Firefox */
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         /* Completely remove scroll bar for menu */
@@ -76,71 +93,73 @@
 
         .sidebar a {
             display: block;
-            color: #d8f3dc;
+            color: #D1E2D9;
             padding: 10px 20px;
             text-decoration: none;
             font-size: 0.9rem;
+            transition: all 0.2s ease;
         }
 
         .sidebar a:hover {
-            background: rgba(255, 255, 255, 0.15);
-            color: white;
+            background: rgba(255, 255, 255, 0.08);
+            color: #FFFFFF;
         }
 
         .sidebar a.active {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
+            background: rgba(16, 185, 129, 0.16);
+            color: #FFFFFF;
             font-weight: 600;
+            border-left: 3px solid #10B981;
         }
 
         /* Standout Primary Feature Styling for AI Quote */
         .sidebar a.nav-ai-quote {
-            background: linear-gradient(135deg, rgba(255, 209, 102, 0.16), rgba(64, 145, 108, 0.38));
-            border: 1px solid rgba(255, 209, 102, 0.45);
-            border-left: 4px solid #ffd166;
+            background: linear-gradient(135deg, rgba(229, 169, 60, 0.14), rgba(16, 185, 129, 0.22));
+            border: 1px solid rgba(229, 169, 60, 0.35);
+            border-left: 4px solid #E5A93C;
             margin: 6px 10px;
             padding: 9px 12px;
             border-radius: 8px;
             font-weight: 700;
-            color: #ffffff !important;
+            color: #FFFFFF !important;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.18);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
             position: relative;
             transition: all 0.25s ease;
         }
 
         .sidebar a.nav-ai-quote:hover {
-            background: linear-gradient(135deg, rgba(255, 209, 102, 0.28), rgba(82, 183, 136, 0.45));
-            border-color: #ffd166;
-            transform: translateX(3px);
-            box-shadow: 0 4px 14px rgba(255, 209, 102, 0.25);
+            background: linear-gradient(135deg, rgba(229, 169, 60, 0.25), rgba(16, 185, 129, 0.32));
+            border-color: #E5A93C;
+            transform: translateX(2px);
+            box-shadow: 0 4px 12px rgba(229, 169, 60, 0.2);
         }
 
         .sidebar a.nav-ai-quote.active {
-            background: linear-gradient(135deg, #2d6a4f, #40916c);
-            border: 1px solid #ffd166;
-            border-left: 4px solid #ffd166;
-            box-shadow: 0 4px 15px rgba(64, 145, 108, 0.45);
+            background: linear-gradient(135deg, #1B4D3E, #0F2F24);
+            border: 1px solid #E5A93C;
+            border-left: 4px solid #E5A93C;
+            box-shadow: 0 4px 14px rgba(15, 47, 36, 0.4);
         }
 
         .ai-quote-badge {
-            background: linear-gradient(135deg, #ffd166, #f39c12);
-            color: #1b4332;
+            background: linear-gradient(135deg, #E5A93C, #D97706);
+            color: #0F2F24;
             font-size: 0.65rem;
             font-weight: 800;
             padding: 2px 7px;
             border-radius: 12px;
             letter-spacing: 0.5px;
-            box-shadow: 0 2px 6px rgba(255, 209, 102, 0.4);
+            box-shadow: 0 2px 6px rgba(229, 169, 60, 0.3);
             text-transform: uppercase;
             animation: aiPulse 2.4s infinite ease-in-out;
         }
 
         @keyframes aiPulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 2px 6px rgba(255, 209, 102, 0.4); }
-            50% { transform: scale(1.08); box-shadow: 0 3px 10px rgba(255, 209, 102, 0.7); }
+            0%, 100% { transform: scale(1); box-shadow: 0 2px 6px rgba(229, 169, 60, 0.3); }
+            50% { transform: scale(1.08); box-shadow: 0 3px 10px rgba(229, 169, 60, 0.6); }
         }
 
         .mainContent {
@@ -164,36 +183,41 @@
         }
 
         .topBar h4 {
-            color: #1b4332;
+            color: #0F172A;
             font-weight: 700;
             margin: 0;
+            letter-spacing: -0.3px;
         }
 
         .card {
+            background: #FFFFFF;
             border-radius: 12px;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-            border: none;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(15, 47, 36, 0.04);
+            border: 1px solid #E1EBE4;
         }
 
         .table thead {
-            background: linear-gradient(135deg, #1b4332, #40916c);
-            color: white;
+            background: linear-gradient(135deg, #0F2F24, #1B4D3E);
+            color: #FFFFFF;
         }
 
         .btn-flora {
-            background: linear-gradient(135deg, #1b4332, #40916c);
-            color: white;
+            background: linear-gradient(135deg, #0F2F24, #1B4D3E);
+            color: #FFFFFF;
             border: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
         }
 
         .btn-flora:hover {
-            background: linear-gradient(135deg, #40916c, #1b4332);
-            color: white;
+            background: linear-gradient(135deg, #1B4D3E, #10B981);
+            color: #FFFFFF;
+            box-shadow: 0 4px 12px rgba(15, 47, 36, 0.25);
         }
 
         .alertBadge {
-            background: red;
-            color: white;
+            background: #EF4444;
+            color: #FFFFFF;
             border-radius: 50%;
             padding: 2px 7px;
             font-size: 0.75rem;
@@ -206,12 +230,13 @@
             justify-content: center;
             width: 42px;
             height: 42px;
-            background: #e8f5e9;
-            color: #1b4332;
+            background: #EBF3EF;
+            color: #0F2F24;
             border-radius: 10px;
             font-size: 1.25rem;
             flex-shrink: 0;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+            border: 1px solid #E1EBE4;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
         }
 
         .topbar-icon-box:empty {
@@ -220,25 +245,26 @@
 
         /* FloraFlow Pagination Styles */
         .page-item.active .page-link {
-            background-color: #1b4332;
-            border-color: #1b4332;
-            color: white;
+            background-color: #0F2F24;
+            border-color: #0F2F24;
+            color: #FFFFFF;
         }
 
         .page-link {
-            color: #1b4332;
+            color: #0F2F24;
         }
 
         .page-link:hover {
-            color: #40916c;
+            color: #10B981;
         }
 
         /* Global Stat Card Styles for Dashboards */
         .statCard {
-            background: white;
+            background: #FFFFFF;
             border-radius: 12px;
             padding: 24px;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(15, 47, 36, 0.04);
+            border: 1px solid #E1EBE4;
             margin-bottom: 20px;
             height: 100%;
         }
@@ -246,17 +272,17 @@
         .statCard .number {
             font-size: 2rem;
             font-weight: 700;
-            color: #1b4332;
+            color: #0F2F24;
         }
 
         .statCard .label {
-            color: #6c757d;
+            color: #64748B;
             font-size: 0.9rem;
         }
 
         .statCard .icon {
             font-size: 2rem;
-            color: #40916c;
+            color: #10B981;
         }
 
         /* Sidebar Toggle Button (Desktop & Mobile) */
@@ -264,13 +290,13 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            background: #e8f5e9;
-            border: 1px solid rgba(27, 67, 50, 0.15);
+            background: #EBF3EF;
+            border: 1px solid #E1EBE4;
             border-radius: 8px;
             width: 38px;
             height: 38px;
             font-size: 1.25rem;
-            color: #1b4332;
+            color: #0F2F24;
             cursor: pointer;
             margin-right: 14px;
             transition: all 0.2s ease;
@@ -278,17 +304,17 @@
         }
 
         .sidebar-toggle:hover {
-            background: #1b4332;
-            color: white;
-            box-shadow: 0 2px 8px rgba(27, 67, 50, 0.2);
+            background: #0F2F24;
+            color: #FFFFFF;
+            box-shadow: 0 2px 8px rgba(15, 47, 36, 0.2);
         }
 
         /* Responsive Overrides */
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
-                height: 100dvh; /* Modern mobile viewport height */
-                padding-bottom: 60px; /* Safe area for bottom bars */
+                height: 100dvh;
+                padding-bottom: 60px;
             }
             .sidebar.show {
                 transform: translateX(0);
@@ -365,7 +391,7 @@
         <!-- Flagship AI Quote (Prominently Highlighted) -->
         <a href="/quotation" class="nav-ai-quote {% if request.path.startswith('/quotation') %}active{% endif %}" title="Intelligent Botanical Quotation Engine">
             <span class="d-flex align-items-center">
-                <i class="bi bi-stars me-2" style="color: #ffd166; font-size: 1.1rem;"></i>AI Quote
+                <i class="bi bi-stars me-2" style="color: #E5A93C; font-size: 1.1rem;"></i>AI Quote
             </span>
             <span class="ai-quote-badge">PRIMARY</span>
         </a>
@@ -401,6 +427,14 @@
 
         <!-- Flex Spacer pushing Footer to the Bottom -->
         <div style="flex-grow: 1; min-height: 20px;"></div>
+
+        <!-- PWA Install Button (Appears when installable) -->
+        <div class="px-3 mb-2">
+            <button id="pwaInstallBtn" class="btn btn-sm w-100 d-none text-start d-flex align-items-center" style="background: rgba(16, 185, 129, 0.16); border: 1px solid rgba(16, 185, 129, 0.4); color: #D1E2D9; font-size: 0.8rem; font-weight: 600; border-radius: 8px; padding: 8px 12px;">
+                <i class="bi bi-download me-2" style="color: #10B981; font-size: 1rem;"></i>
+                <span>Install FloraFlow</span>
+            </button>
+        </div>
 
         <!-- Logout Page Above Privacy Policy -->
         {% if session.get('staffId') %}
@@ -468,6 +502,44 @@
                     }
                 } catch(e) {}
             }
+        });
+
+        // PWA Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js', { scope: '/' })
+                    .then((reg) => {
+                        console.log('[PWA] Service Worker registered with scope:', reg.scope);
+                    })
+                    .catch((err) => {
+                        console.warn('[PWA] Service Worker registration failed:', err);
+                    });
+            });
+        }
+
+        // PWA Install Prompt Listener
+        let deferredPrompt;
+        const installBtn = document.getElementById('pwaInstallBtn');
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            if (installBtn) {
+                installBtn.classList.remove('d-none');
+                installBtn.addEventListener('click', async () => {
+                    installBtn.classList.add('d-none');
+                    if (deferredPrompt) {
+                        deferredPrompt.prompt();
+                        const { outcome } = await deferredPrompt.userChoice;
+                        console.log('[PWA] Install prompt outcome:', outcome);
+                        deferredPrompt = null;
+                    }
+                });
+            }
+        });
+
+        window.addEventListener('appinstalled', () => {
+            console.log('[PWA] FloraFlow successfully installed!');
+            if (installBtn) installBtn.classList.add('d-none');
         });
     </script>
     {% block extraScripts %}{% endblock %}
