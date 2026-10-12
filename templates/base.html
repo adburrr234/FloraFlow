@@ -35,6 +35,24 @@
             display: flex;
             flex-direction: column;
             overflow-y: auto;
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+
+        /* Completely remove scroll bar for menu */
+        .sidebar::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+            width: 0;
+            height: 0;
+        }
+
+        /* Desktop Collapsible Sidebar */
+        body.sidebar-collapsed .sidebar {
+            transform: translateX(-100%);
+        }
+
+        body.sidebar-collapsed .mainContent {
+            margin-left: 0 !important;
         }
 
         .sidebar .sidebar-logo-container {
@@ -73,6 +91,56 @@
             background: rgba(255, 255, 255, 0.2);
             color: white;
             font-weight: 600;
+        }
+
+        /* Standout Primary Feature Styling for AI Quote */
+        .sidebar a.nav-ai-quote {
+            background: linear-gradient(135deg, rgba(255, 209, 102, 0.16), rgba(64, 145, 108, 0.38));
+            border: 1px solid rgba(255, 209, 102, 0.45);
+            border-left: 4px solid #ffd166;
+            margin: 6px 10px;
+            padding: 9px 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            color: #ffffff !important;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.18);
+            position: relative;
+            transition: all 0.25s ease;
+        }
+
+        .sidebar a.nav-ai-quote:hover {
+            background: linear-gradient(135deg, rgba(255, 209, 102, 0.28), rgba(82, 183, 136, 0.45));
+            border-color: #ffd166;
+            transform: translateX(3px);
+            box-shadow: 0 4px 14px rgba(255, 209, 102, 0.25);
+        }
+
+        .sidebar a.nav-ai-quote.active {
+            background: linear-gradient(135deg, #2d6a4f, #40916c);
+            border: 1px solid #ffd166;
+            border-left: 4px solid #ffd166;
+            box-shadow: 0 4px 15px rgba(64, 145, 108, 0.45);
+        }
+
+        .ai-quote-badge {
+            background: linear-gradient(135deg, #ffd166, #f39c12);
+            color: #1b4332;
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 2px 7px;
+            border-radius: 12px;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 6px rgba(255, 209, 102, 0.4);
+            text-transform: uppercase;
+            animation: aiPulse 2.4s infinite ease-in-out;
+        }
+
+        @keyframes aiPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 2px 6px rgba(255, 209, 102, 0.4); }
+            50% { transform: scale(1.08); box-shadow: 0 3px 10px rgba(255, 209, 102, 0.7); }
         }
 
         .mainContent {
@@ -191,6 +259,30 @@
             color: #40916c;
         }
 
+        /* Sidebar Toggle Button (Desktop & Mobile) */
+        .sidebar-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #e8f5e9;
+            border: 1px solid rgba(27, 67, 50, 0.15);
+            border-radius: 8px;
+            width: 38px;
+            height: 38px;
+            font-size: 1.25rem;
+            color: #1b4332;
+            cursor: pointer;
+            margin-right: 14px;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .sidebar-toggle:hover {
+            background: #1b4332;
+            color: white;
+            box-shadow: 0 2px 8px rgba(27, 67, 50, 0.2);
+        }
+
         /* Responsive Overrides */
         @media (max-width: 768px) {
             .sidebar {
@@ -210,9 +302,6 @@
                 align-items: flex-start;
                 gap: 15px;
             }
-            .mobile-toggle {
-                display: inline-block !important;
-            }
             .topBar-content {
                 display: flex;
                 width: 100%;
@@ -224,16 +313,6 @@
                 touch-action: none;
                 -ms-touch-action: none;
             }
-        }
-        
-        .mobile-toggle {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: #1b4332;
-            padding: 0;
-            margin-right: 15px;
         }
         
         .sidebar-overlay {
@@ -282,8 +361,14 @@
             <i class="bi bi-cart me-2"></i>POS</a>
         <a href="/salesHistory" class="{% if request.path == '/salesHistory' %}active{% endif %}">
             <i class="bi bi-clock-history me-2"></i>Sales History</a>
-        <a href="/quotation" class="{% if request.path.startswith('/quotation') %}active{% endif %}">
-            <i class="bi bi-magic me-2"></i>AI Quoter</a>
+
+        <!-- Flagship AI Quote (Prominently Highlighted) -->
+        <a href="/quotation" class="nav-ai-quote {% if request.path.startswith('/quotation') %}active{% endif %}" title="Intelligent Botanical Quotation Engine">
+            <span class="d-flex align-items-center">
+                <i class="bi bi-stars me-2" style="color: #ffd166; font-size: 1.1rem;"></i>AI Quote
+            </span>
+            <span class="ai-quote-badge">PRIMARY</span>
+        </a>
 
         <!-- Admin Only -->
         {% if session.get('role') == 'admin' %}
@@ -314,26 +399,28 @@
         {% endif %}
         {% endif %}
 
-        <!-- Policy -->
-        <a href="/privacyPolicy" class="{% if request.path == '/privacyPolicy' %}active{% endif %}">
-            <i class="bi bi-shield-check me-2"></i>Privacy Policy</a>
+        <!-- Flex Spacer pushing Footer to the Bottom -->
+        <div style="flex-grow: 1; min-height: 20px;"></div>
 
-        <!-- Logout -->
-        <div style="flex-grow: 1;"></div>
+        <!-- Logout Page Above Privacy Policy -->
         {% if session.get('staffId') %}
-        <a href="/logout" style="margin-bottom: 30px; color: #ffb3b3;">
+        <a href="/logout" style="color: #ffb3b3;">
             <i class="bi bi-box-arrow-right me-2"></i>Logout</a>
         {% else %}
-        <a href="/login" style="margin-bottom: 30px; color: #d8f3dc;">
+        <a href="/login" style="color: #d8f3dc;">
             <i class="bi bi-box-arrow-in-right me-2"></i>Login</a>
         {% endif %}
+
+        <!-- Privacy Policy at the very end of menu -->
+        <a href="/privacyPolicy" class="{% if request.path == '/privacyPolicy' %}active{% endif %}" style="margin-bottom: 25px; opacity: 0.85;">
+            <i class="bi bi-shield-check me-2"></i>Privacy Policy</a>
     </div>
 
     <div class="mainContent">
         <div class="topBar">
             <div class="topBar-content">
                 <div class="d-flex align-items-center">
-                    <button class="mobile-toggle" onclick="toggleSidebar()" aria-label="Toggle Navigation">
+                    <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle Sidebar Navigation" title="Toggle Navigation">
                         <i class="bi bi-list"></i>
                     </button>
                     <h4 class="mb-0">{% block pageTitle %}{% endblock %}</h4>
@@ -360,10 +447,28 @@
 
     <script>
         function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('show');
-            document.querySelector('.sidebar-overlay').classList.toggle('show');
-            document.body.classList.toggle('sidebar-open');
+            if (window.innerWidth <= 768) {
+                document.getElementById('sidebar').classList.toggle('show');
+                document.querySelector('.sidebar-overlay').classList.toggle('show');
+                document.body.classList.toggle('sidebar-open');
+            } else {
+                document.body.classList.toggle('sidebar-collapsed');
+                try {
+                    localStorage.setItem('ff_sidebar_collapsed', document.body.classList.contains('sidebar-collapsed') ? '1' : '0');
+                } catch(e) {}
+            }
         }
+
+        // Restore desktop collapse preference
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.innerWidth > 768) {
+                try {
+                    if (localStorage.getItem('ff_sidebar_collapsed') === '1') {
+                        document.body.classList.add('sidebar-collapsed');
+                    }
+                } catch(e) {}
+            }
+        });
     </script>
     {% block extraScripts %}{% endblock %}
 </body>

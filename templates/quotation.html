@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
-{% block title %}AI Quotation Engine{% endblock %}
-{% block pageTitle %}AI Quotation Engine{% endblock %}
-{% block pageIcon %}<i class="bi bi-magic"></i>{% endblock %}
+{% block title %}AI Quote{% endblock %}
+{% block pageTitle %}AI Quote{% endblock %}
+{% block pageIcon %}<i class="bi bi-stars" style="color: #ffd166;"></i>{% endblock %}
 
 {% block extraStyles %}
 /* Print styles for digital quotation */
@@ -72,6 +72,22 @@
     border-radius: 50%;
     object-fit: cover;
     border: 2px solid #2d6a4f;
+    flex-shrink: 0;
+}
+
+/* Mobile specific tweaks */
+@media (max-width: 576px) {
+    .quotation-receipt {
+        padding: 20px 16px !important;
+    }
+    .receipt-header-logo {
+        width: 44px;
+        height: 44px;
+    }
+    .spec-badge {
+        font-size: 0.78rem;
+        padding: 5px 9px;
+    }
 }
 {% endblock %}
 
@@ -79,11 +95,11 @@
 
 <!-- Hero Banner / Description -->
 <div class="card p-3 p-md-4 mb-4 border-0 shadow-sm" style="border-radius: 12px; background: linear-gradient(135deg, #1b4332, #2d6a4f); color: white;">
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
         <div>
-            <div class="d-flex align-items-center gap-2 mb-1">
+            <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
                 <span class="badge bg-warning text-dark fw-bold px-2 py-1"><i class="bi bi-cpu me-1"></i>Rule-Based AI</span>
-                <span class="badge bg-light text-success fw-bold px-2 py-1">GreenQuoter v1.0</span>
+                <span class="badge bg-light text-success fw-bold px-2 py-1">GreenQuote Engine v1.0</span>
             </div>
             <h4 class="fw-bold mb-1">Intelligent Botanical Quotation Engine</h4>
             <p class="mb-0 text-white-50 small">
@@ -91,11 +107,11 @@
             </p>
         </div>
         {% if generatedQuote %}
-        <div class="d-flex gap-2">
-            <a href="#quotationResult" class="btn btn-light btn-sm fw-bold px-3 py-2 text-success shadow-sm">
+        <div class="d-flex flex-wrap gap-2 w-100 w-md-auto">
+            <a href="#quotationResult" class="btn btn-light btn-sm fw-bold px-3 py-2 text-success shadow-sm flex-fill flex-md-grow-0">
                 <i class="bi bi-receipt me-1"></i>View Current Quote
             </a>
-            <a href="/quotation" class="btn btn-outline-light btn-sm px-3 py-2">
+            <a href="/quotation" class="btn btn-outline-light btn-sm px-3 py-2 flex-fill flex-md-grow-0">
                 <i class="bi bi-plus-circle me-1"></i>New Quote
             </a>
         </div>
@@ -149,7 +165,7 @@
                     </div>
                     <input type="number" name="areaSqFt" id="areaSqFtInput" class="form-control" min="15" max="2500"
                            value="{{ formValues.areaSqFt if formValues else '100' }}" required>
-                    <div class="d-flex gap-1 mt-2">
+                    <div class="d-flex flex-wrap gap-1 mt-2">
                         <button type="button" class="btn btn-sm btn-outline-secondary flex-fill py-1 small" onclick="setArea(50)">50 sq ft</button>
                         <button type="button" class="btn btn-sm btn-outline-secondary flex-fill py-1 small" onclick="setArea(100)">100 sq ft</button>
                         <button type="button" class="btn btn-sm btn-outline-secondary flex-fill py-1 small" onclick="setArea(250)">250 sq ft</button>
@@ -164,7 +180,7 @@
                         <div class="col-4">
                             <input type="radio" class="btn-check" name="sunlight" id="sun_full" value="fullSun"
                                    {% if not formValues or formValues.sunlight == 'fullSun' %}checked{% endif %}>
-                            <label class="btn btn-outline-success w-100 py-2 small d-flex flex-column align-items-center" for="sun_full">
+                            <label class="btn btn-outline-success w-100 py-2 small d-flex flex-column align-items-center" for="sun_full" style="font-size: 0.8rem; padding: 6px 2px;">
                                 <i class="bi bi-brightness-high fs-5"></i>
                                 <span>Full Sun</span>
                             </label>
@@ -172,7 +188,7 @@
                         <div class="col-4">
                             <input type="radio" class="btn-check" name="sunlight" id="sun_partial" value="partial"
                                    {% if formValues and formValues.sunlight == 'partial' or not formValues %}checked{% endif %}>
-                            <label class="btn btn-outline-success w-100 py-2 small d-flex flex-column align-items-center" for="sun_partial">
+                            <label class="btn btn-outline-success w-100 py-2 small d-flex flex-column align-items-center" for="sun_partial" style="font-size: 0.8rem; padding: 6px 2px;">
                                 <i class="bi bi-cloud-sun fs-5"></i>
                                 <span>Partial</span>
                             </label>
@@ -180,7 +196,7 @@
                         <div class="col-4">
                             <input type="radio" class="btn-check" name="sunlight" id="sun_low" value="lowLight"
                                    {% if formValues and formValues.sunlight == 'lowLight' %}checked{% endif %}>
-                            <label class="btn btn-outline-success w-100 py-2 small d-flex flex-column align-items-center" for="sun_low">
+                            <label class="btn btn-outline-success w-100 py-2 small d-flex flex-column align-items-center" for="sun_low" style="font-size: 0.8rem; padding: 6px 2px;">
                                 <i class="bi bi-moon-stars fs-5"></i>
                                 <span>Low Light</span>
                             </label>
@@ -244,7 +260,7 @@
                             <input class="form-check-input" type="checkbox" name="includeSoil" id="chkSoil"
                                    {% if not formValues or formValues.includeSoil %}checked{% endif %}>
                             <label class="form-check-label small" for="chkSoil">
-                                <strong>Potting Soil & Organic Nutrients</strong> (Mix + Vermicompost)
+                                <strong>Potting Soil & Nutrients</strong> (Mix + Vermicompost)
                             </label>
                         </div>
                         <div class="form-check">
@@ -265,7 +281,7 @@
                 </div>
 
                 <button type="submit" class="btn btn-flora w-100 py-2 fw-bold shadow-sm">
-                    <i class="bi bi-magic me-2"></i>Generate AI Quotation
+                    <i class="bi bi-stars me-2" style="color: #ffd166;"></i>Generate AI Quotation
                 </button>
             </form>
         </div>
@@ -274,23 +290,23 @@
     <!-- RIGHT COLUMN: Generated Digital Quotation Receipt -->
     <div class="col-lg-7 col-xl-8" id="quotationResult">
         {% if generatedQuote %}
-        <div class="quotation-receipt p-4 p-md-5">
+        <div class="quotation-receipt p-3 p-sm-4 p-md-5">
             <!-- Receipt Top Bar / Action Buttons -->
-            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 pb-3 mb-4 border-bottom no-print">
-                <div class="d-flex align-items-center gap-2">
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 pb-3 mb-4 border-bottom no-print">
+                <div class="d-flex align-items-center gap-2 flex-wrap">
                     <span class="badge bg-success px-3 py-2"><i class="bi bi-check-circle-fill me-1"></i>Estimate Generated</span>
                     <small class="text-muted">Ref: <strong>{{ generatedQuote.quoteNumber }}</strong></small>
                 </div>
-                <div class="d-flex gap-2">
-                    <button type="button" onclick="window.print()" class="btn btn-sm btn-outline-secondary">
-                        <i class="bi bi-printer me-1"></i>Print Receipt
+                <div class="d-flex flex-wrap gap-2 w-100 w-sm-auto justify-content-start justify-content-sm-end">
+                    <button type="button" onclick="window.print()" class="btn btn-sm btn-outline-secondary flex-fill flex-sm-grow-0">
+                        <i class="bi bi-printer me-1"></i>Print
                     </button>
-                    <a href="/quotation/pdf/{{ quotationDbId if quotationDbId else '' }}" target="_blank" class="btn btn-sm btn-secondary">
-                        <i class="bi bi-file-earmark-pdf me-1"></i>PDF Download
+                    <a href="/quotation/pdf/{{ quotationDbId if quotationDbId else '' }}" target="_blank" class="btn btn-sm btn-secondary flex-fill flex-sm-grow-0">
+                        <i class="bi bi-file-earmark-pdf me-1"></i>PDF
                     </a>
-                    <form method="POST" action="/quotation/toPos" style="display:inline;">
+                    <form method="POST" action="/quotation/toPos" class="d-inline flex-fill flex-sm-grow-0">
                         <input type="hidden" name="quoteDataJson" value='{{ generatedQuote | tojson }}'>
-                        <button type="submit" class="btn btn-sm btn-flora px-3">
+                        <button type="submit" class="btn btn-sm btn-flora w-100 px-3">
                             <i class="bi bi-cart-plus me-1"></i>Load into POS
                         </button>
                     </form>
@@ -298,7 +314,7 @@
             </div>
 
             <!-- Receipt Header -->
-            <div class="d-flex justify-content-between align-items-start mb-4">
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4">
                 <div class="d-flex align-items-center gap-3">
                     <img src="{{ url_for('static', filename='logo.jpeg') }}" alt="FloraFlow" class="receipt-header-logo">
                     <div>
@@ -306,7 +322,7 @@
                         <div class="text-muted small">Botanical & Landscape Solutions | Digital Quotation</div>
                     </div>
                 </div>
-                <div class="text-end">
+                <div class="text-start text-sm-end w-100 w-sm-auto pt-2 pt-sm-0 border-top border-sm-top-0">
                     <div class="badge bg-light text-dark border fs-6 px-3 py-2 mb-1">{{ generatedQuote.quoteNumber }}</div>
                     <div class="small text-muted">Date: <strong>{{ generatedQuote.date }}</strong></div>
                     <div class="small text-muted">Valid Until: <strong class="text-success">{{ generatedQuote.validUntil }}</strong></div>
@@ -327,7 +343,9 @@
             <h5 class="fw-bold mb-2" style="color: #1b4332;">
                 <i class="bi bi-flower1 me-2"></i>1. Recommended Flora ({{ generatedQuote.allocatedCount }} Plants)
             </h5>
-            <div class="table-responsive mb-4">
+
+            <!-- Desktop Flora Table -->
+            <div class="d-none d-md-block table-responsive mb-4">
                 <table class="table table-hover align-middle mb-0">
                     <thead style="background: #f0f7f2; color: #1b4332;">
                         <tr>
@@ -361,12 +379,45 @@
                 </table>
             </div>
 
+            <!-- Mobile Flora Standalone Cards -->
+            <div class="d-block d-md-none d-flex flex-column gap-3 mb-4">
+                {% for p in generatedQuote.plants %}
+                <div class="card p-3 border shadow-sm" style="border-radius: 12px; background: #ffffff;">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <h6 class="fw-bold mb-0" style="color: #1b4332;">{{ p.name }}</h6>
+                            <small class="text-muted">{{ p.category }}</small>
+                        </div>
+                        <span class="badge bg-light text-dark border">{{ p.role }}</span>
+                    </div>
+                    {% if p.care %}
+                    <p class="small text-muted mb-2" style="font-size: 0.82rem; line-height: 1.35;">
+                        <i class="bi bi-info-circle me-1 text-success"></i>{{ p.care }}
+                    </p>
+                    {% endif %}
+                    <div class="d-flex justify-content-between align-items-center pt-2 border-top small">
+                        <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">Qty: {{ p.qty }}</span>
+                        <span class="text-muted">Rs. {{ '{:,.2f}'.format(p.unitPrice) }}</span>
+                        <span class="fw-bold fs-6" style="color: #1b4332;">Rs. {{ '{:,.2f}'.format(p.subtotal) }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="card p-3 border-0" style="background: #eef7f2; border-radius: 10px;">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="fw-bold text-muted small">Flora Subtotal:</span>
+                        <span class="fw-bold fs-6 text-success">Rs. {{ '{:,.2f}'.format(quoteTotalPlants if quoteTotalPlants else generatedQuote.totalPlantsCost) }}</span>
+                    </div>
+                </div>
+            </div>
+
             <!-- 2. Materials, Pots & Soil -->
             {% if generatedQuote.accessories %}
             <h5 class="fw-bold mb-2" style="color: #1b4332;">
                 <i class="bi bi-basket me-2"></i>2. Planters, Growing Medium & Materials
             </h5>
-            <div class="table-responsive mb-4">
+
+            <!-- Desktop Materials Table -->
+            <div class="d-none d-md-block table-responsive mb-4">
                 <table class="table table-hover align-middle mb-0">
                     <thead style="background: #f0f7f2; color: #1b4332;">
                         <tr>
@@ -396,45 +447,70 @@
                     </tfoot>
                 </table>
             </div>
+
+            <!-- Mobile Materials Standalone Cards -->
+            <div class="d-block d-md-none d-flex flex-column gap-3 mb-4">
+                {% for a in generatedQuote.accessories %}
+                <div class="card p-3 border shadow-sm" style="border-radius: 12px; background: #ffffff;">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h6 class="fw-bold mb-0" style="color: #1b4332;">{{ a.name }}</h6>
+                        <span class="badge bg-light text-dark border">{{ a.purpose }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center pt-2 border-top small">
+                        <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">Qty: {{ a.qty }}</span>
+                        <span class="text-muted">Rs. {{ '{:,.2f}'.format(a.unitPrice) }}</span>
+                        <span class="fw-bold fs-6" style="color: #1b4332;">Rs. {{ '{:,.2f}'.format(a.subtotal) }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="card p-3 border-0" style="background: #eef7f2; border-radius: 10px;">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="fw-bold text-muted small">Materials Subtotal:</span>
+                        <span class="fw-bold fs-6 text-success">Rs. {{ '{:,.2f}'.format(generatedQuote.totalAccessoriesCost) }}</span>
+                    </div>
+                </div>
+            </div>
             {% endif %}
 
             <!-- Financial Grand Total Summary Card -->
-            <div class="card p-3 mb-4 border-0" style="background: #f4f8f5; border-radius: 12px;">
-                <div class="row align-items-center">
-                    <div class="col-md-7 mb-2 mb-md-0">
-                        <div class="small text-muted">Cost Breakdown:</div>
-                        <div class="small">
-                            Plants: <strong>Rs. {{ '{:,.2f}'.format(generatedQuote.totalPlantsCost) }}</strong> |
-                            Materials: <strong>Rs. {{ '{:,.2f}'.format(generatedQuote.totalAccessoriesCost) }}</strong>
+            <div class="card p-3 p-md-4 mb-4 border-0 shadow-sm" style="background: #f4f8f5; border-radius: 12px;">
+                <div class="row align-items-center g-3">
+                    <div class="col-md-7">
+                        <div class="small text-muted mb-1 fw-bold">Cost Breakdown:</div>
+                        <div class="small text-secondary">
+                            <span>Plants: <strong class="text-dark">Rs. {{ '{:,.2f}'.format(generatedQuote.totalPlantsCost) }}</strong></span>
+                            <span class="mx-1">&bull;</span>
+                            <span>Materials: <strong class="text-dark">Rs. {{ '{:,.2f}'.format(generatedQuote.totalAccessoriesCost) }}</strong></span>
                             {% if generatedQuote.laborCost > 0 %}
-                            | On-site Setup: <strong>Rs. {{ '{:,.2f}'.format(generatedQuote.laborCost) }}</strong>
+                            <span class="mx-1">&bull;</span>
+                            <span>Setup Labor: <strong class="text-dark">Rs. {{ '{:,.2f}'.format(generatedQuote.laborCost) }}</strong></span>
                             {% endif %}
                         </div>
                     </div>
-                    <div class="col-md-5 text-md-end">
+                    <div class="col-md-5 text-start text-md-end pt-2 pt-md-0 border-top border-md-top-0">
                         <span class="text-muted small d-block">Estimated Total Cost:</span>
-                        <span class="fw-bold fs-3 text-success">Rs. {{ '{:,.2f}'.format(generatedQuote.grandTotal) }}</span>
+                        <span class="fw-bold fs-2 text-success">Rs. {{ '{:,.2f}'.format(generatedQuote.grandTotal) }}</span>
                     </div>
                 </div>
             </div>
 
             <!-- AI Botanical Care Advisory Box -->
-            <div class="card p-3 p-md-4 border-0 mb-3" style="background: #edf7f0; border-radius: 12px; border-left: 5px solid #2d6a4f !important;">
+            <div class="card p-3 p-md-4 border-0 mb-3 shadow-sm" style="background: #edf7f0; border-radius: 12px; border-left: 5px solid #2d6a4f !important;">
                 <div class="d-flex align-items-center gap-2 mb-2">
                     <i class="bi bi-lightbulb-fill text-success fs-5"></i>
                     <h6 class="fw-bold mb-0" style="color: #1b4332;">AI Botanical Care & Sustainability Advisory</h6>
                 </div>
                 <div class="row g-2 small text-secondary">
-                    <div class="col-md-6">
+                    <div class="col-12 col-md-6">
                         <strong>⏱️ Weekly Care Effort:</strong> {{ generatedQuote.advisory.effort }}
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-12 col-md-6">
                         <strong>💧 Watering Regimen:</strong> {{ generatedQuote.advisory.watering }}
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-12 col-md-6">
                         <strong>☀️ Lighting Placement:</strong> {{ generatedQuote.advisory.sunlight }}
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-12 col-md-6">
                         <strong>🌱 Eco-Impact Contribution:</strong> {{ generatedQuote.advisory.co2Absorption }}
                     </div>
                 </div>
@@ -449,15 +525,15 @@
 
         {% else %}
         <!-- Empty / Welcome State -->
-        <div class="card p-5 text-center border-0 shadow-sm" style="border-radius: 12px;">
+        <div class="card p-4 p-md-5 text-center border-0 shadow-sm" style="border-radius: 12px;">
             <div class="mb-3">
-                <i class="bi bi-magic" style="font-size: 3.5rem; color: #40916c;"></i>
+                <i class="bi bi-stars" style="font-size: 3.5rem; color: #40916c;"></i>
             </div>
             <h4 class="fw-bold" style="color: #1b4332;">Ready to Generate Your First AI Quote</h4>
             <p class="text-muted mx-auto" style="max-width: 500px;">
                 Fill out the project specifications on the left (Space type, area dimensions, sunlight, and desired package tier) to generate a complete digital botanical estimate.
             </p>
-            <div class="d-flex justify-content-center gap-2 mt-2">
+            <div class="d-flex flex-wrap justify-content-center gap-2 mt-2">
                 <span class="badge bg-light text-dark border p-2">🌿 Auto-Plant Density</span>
                 <span class="badge bg-light text-dark border p-2">🪴 Pot Pairing</span>
                 <span class="badge bg-light text-dark border p-2">🧾 Instant PDF Receipt</span>
