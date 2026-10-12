@@ -6,12 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FloraFlow — Login</title>
     <!-- PWA Web App Manifest & Mobile Shell Meta -->
-    <link rel="manifest" href="/static/manifest.json">
+    <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#0F2F24">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="FloraFlow">
+    <link rel="icon" type="image/png" href="/favicon.ico">
+    <link rel="shortcut icon" type="image/png" href="/favicon.ico">
     <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="192x192" href="/static/icons/icon-192x192.png">
 
@@ -123,6 +125,19 @@
             btn.style.pointerEvents = 'none';
             btn.style.opacity = '0.85';
         });
+
+        // PWA Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js', { scope: '/' })
+                    .then((reg) => {
+                        console.log('[PWA] Service Worker registered on login with scope:', reg.scope);
+                    })
+                    .catch((err) => {
+                        console.warn('[PWA] Service Worker registration failed on login:', err);
+                    });
+            });
+        }
     </script>
 </body>
 

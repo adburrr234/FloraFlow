@@ -2218,6 +2218,18 @@ def service_worker():
     return response
 
 
+@app.route('/manifest.json')
+def pwa_manifest():
+    response = send_from_directory('static', 'manifest.json', mimetype='application/manifest+json')
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    return response
+
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory('static/icons', 'icon-192x192.png', mimetype='image/png')
+
+
 @app.route('/offline')
 def offline():
     return render_template('offline.html')
