@@ -75,6 +75,104 @@
     flex-shrink: 0;
 }
 
+/* Tier selection buttons adhering to Palette A (Spruce & Hunter Green) */
+.btn-tier {
+    display: block;
+    width: 100%;
+    padding: 10px 6px;
+    border: 1.5px solid #E1EBE4;
+    background: #FFFFFF;
+    color: #0F2F24;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    user-select: none;
+}
+.btn-tier:hover {
+    border-color: #10B981;
+    background: #F0FDF4;
+    color: #0F2F24;
+}
+.btn-tier .tier-title {
+    display: block;
+    font-weight: 700;
+    font-size: 0.88rem;
+    line-height: 1.2;
+}
+.btn-tier .tier-desc {
+    display: block;
+    font-size: 0.74rem;
+    color: #64748B;
+    margin-top: 2px;
+    transition: color 0.2s ease;
+}
+.btn-check:checked + .btn-tier {
+    background: linear-gradient(135deg, #0F2F24 0%, #1B4D3E 100%);
+    border-color: #0F2F24;
+    color: #FFFFFF !important;
+    box-shadow: 0 4px 12px rgba(15, 47, 36, 0.25);
+}
+.btn-check:checked + .btn-tier .tier-desc {
+    color: #A7F3D0 !important;
+}
+
+/* Sunlight exposure buttons matching theme */
+.btn-sunlight {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 8px 4px;
+    border: 1.5px solid #E1EBE4;
+    background: #FFFFFF;
+    color: #0F2F24;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    user-select: none;
+}
+.btn-sunlight i {
+    font-size: 1.25rem;
+    margin-bottom: 2px;
+    color: #10B981;
+    transition: color 0.2s ease;
+}
+.btn-sunlight:hover {
+    border-color: #10B981;
+    background: #F0FDF4;
+    color: #0F2F24;
+}
+.btn-check:checked + .btn-sunlight {
+    background: linear-gradient(135deg, #0F2F24 0%, #1B4D3E 100%);
+    border-color: #0F2F24;
+    color: #FFFFFF !important;
+    box-shadow: 0 4px 12px rgba(15, 47, 36, 0.25);
+}
+.btn-check:checked + .btn-sunlight i {
+    color: #FBBF24 !important;
+}
+
+/* Area shortcut buttons */
+.btn-area-quick {
+    border: 1px solid #E1EBE4;
+    background: #F8FAFC;
+    color: #334155;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 4px 8px;
+    transition: all 0.15s ease;
+}
+.btn-area-quick:hover {
+    background: #EBF3EF;
+    border-color: #10B981;
+    color: #0F2F24;
+}
+
 /* Mobile specific tweaks */
 @media (max-width: 576px) {
     .quotation-receipt {
@@ -124,10 +222,10 @@
     <div class="col-lg-5 col-xl-4 no-print">
         <div class="card p-3 p-md-4 border-0 shadow-sm" style="border-radius: 12px;">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="fw-bold mb-0" style="color: #1b4332;">
+                <h5 class="fw-bold mb-0" style="color: #0F2F24;">
                     <i class="bi bi-sliders me-2"></i>Project Parameters
                 </h5>
-                <small class="text-muted">Step 1 of 2</small>
+                <small class="text-muted fw-semibold">Step 1 of 2</small>
             </div>
 
             <form method="POST" action="/quotation" id="quoterForm">
@@ -149,11 +247,11 @@
                 <div class="mb-3">
                     <label class="form-label small fw-bold text-muted">Space Type</label>
                     <select name="spaceType" class="form-select fw-semibold" required>
-                        <option value="balcony" {% if formValues and formValues.spaceType == 'balcony' %}selected{% endif %}>🪴 Balcony Garden</option>
-                        <option value="indoor" {% if formValues and formValues.spaceType == 'indoor' %}selected{% endif %}>🛋️ Indoor (Living / Bedroom / Office)</option>
-                        <option value="rooftop" {% if formValues and formValues.spaceType == 'rooftop' %}selected{% endif %}>☀️ Rooftop / Terrace Garden</option>
-                        <option value="backyard" {% if formValues and formValues.spaceType == 'backyard' %}selected{% endif %}>🏡 Backyard / Garden Lawn</option>
-                        <option value="commercial" {% if formValues and formValues.spaceType == 'commercial' %}selected{% endif %}>☕ Commercial (Cafe / Retail / Lobby)</option>
+                        <option value="balcony" {% if formValues and formValues.spaceType == 'balcony' %}selected{% endif %}>Balcony Garden</option>
+                        <option value="indoor" {% if formValues and formValues.spaceType == 'indoor' %}selected{% endif %}>Indoor (Living / Bedroom / Office)</option>
+                        <option value="rooftop" {% if formValues and formValues.spaceType == 'rooftop' %}selected{% endif %}>Rooftop / Terrace Garden</option>
+                        <option value="backyard" {% if formValues and formValues.spaceType == 'backyard' %}selected{% endif %}>Backyard / Garden Lawn</option>
+                        <option value="commercial" {% if formValues and formValues.spaceType == 'commercial' %}selected{% endif %}>Commercial (Cafe / Retail / Lobby)</option>
                     </select>
                 </div>
 
@@ -166,10 +264,10 @@
                     <input type="number" name="areaSqFt" id="areaSqFtInput" class="form-control" min="15" max="2500"
                            value="{{ formValues.areaSqFt if formValues else '100' }}" required>
                     <div class="d-flex flex-wrap gap-1 mt-2">
-                        <button type="button" class="btn btn-sm btn-outline-secondary flex-fill py-1 small" onclick="setArea(50)">50 sq ft</button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary flex-fill py-1 small" onclick="setArea(100)">100 sq ft</button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary flex-fill py-1 small" onclick="setArea(250)">250 sq ft</button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary flex-fill py-1 small" onclick="setArea(500)">500 sq ft</button>
+                        <button type="button" class="btn-area-quick flex-fill" onclick="setArea(50)">50 sq ft</button>
+                        <button type="button" class="btn-area-quick flex-fill" onclick="setArea(100)">100 sq ft</button>
+                        <button type="button" class="btn-area-quick flex-fill" onclick="setArea(250)">250 sq ft</button>
+                        <button type="button" class="btn-area-quick flex-fill" onclick="setArea(500)">500 sq ft</button>
                     </div>
                 </div>
 
@@ -180,24 +278,24 @@
                         <div class="col-4">
                             <input type="radio" class="btn-check" name="sunlight" id="sun_full" value="fullSun"
                                    {% if not formValues or formValues.sunlight == 'fullSun' %}checked{% endif %}>
-                            <label class="btn btn-outline-success w-100 py-2 small d-flex flex-column align-items-center" for="sun_full" style="font-size: 0.8rem; padding: 6px 2px;">
-                                <i class="bi bi-brightness-high fs-5"></i>
+                            <label class="btn-sunlight" for="sun_full">
+                                <i class="bi bi-brightness-high"></i>
                                 <span>Full Sun</span>
                             </label>
                         </div>
                         <div class="col-4">
                             <input type="radio" class="btn-check" name="sunlight" id="sun_partial" value="partial"
                                    {% if formValues and formValues.sunlight == 'partial' or not formValues %}checked{% endif %}>
-                            <label class="btn btn-outline-success w-100 py-2 small d-flex flex-column align-items-center" for="sun_partial" style="font-size: 0.8rem; padding: 6px 2px;">
-                                <i class="bi bi-cloud-sun fs-5"></i>
+                            <label class="btn-sunlight" for="sun_partial">
+                                <i class="bi bi-cloud-sun"></i>
                                 <span>Partial</span>
                             </label>
                         </div>
                         <div class="col-4">
                             <input type="radio" class="btn-check" name="sunlight" id="sun_low" value="lowLight"
                                    {% if formValues and formValues.sunlight == 'lowLight' %}checked{% endif %}>
-                            <label class="btn btn-outline-success w-100 py-2 small d-flex flex-column align-items-center" for="sun_low" style="font-size: 0.8rem; padding: 6px 2px;">
-                                <i class="bi bi-moon-stars fs-5"></i>
+                            <label class="btn-sunlight" for="sun_low">
+                                <i class="bi bi-moon-stars"></i>
                                 <span>Low Light</span>
                             </label>
                         </div>
@@ -221,25 +319,25 @@
                         <div class="col-4">
                             <input type="radio" class="btn-check" name="tier" id="tier_eco" value="economy"
                                    {% if formValues and formValues.tier == 'economy' %}checked{% endif %}>
-                            <label class="btn btn-outline-secondary w-100 py-2 small" for="tier_eco">
-                                <span class="d-block fw-bold">Starter</span>
-                                <span class="text-muted" style="font-size:0.75rem;">Budget</span>
+                            <label class="btn-tier" for="tier_eco">
+                                <span class="tier-title">Starter</span>
+                                <span class="tier-desc">Budget</span>
                             </label>
                         </div>
                         <div class="col-4">
                             <input type="radio" class="btn-check" name="tier" id="tier_std" value="standard"
                                    {% if not formValues or formValues.tier == 'standard' %}checked{% endif %}>
-                            <label class="btn btn-outline-secondary w-100 py-2 small" for="tier_std">
-                                <span class="d-block fw-bold">Standard</span>
-                                <span class="text-muted" style="font-size:0.75rem;">Balanced</span>
+                            <label class="btn-tier" for="tier_std">
+                                <span class="tier-title">Standard</span>
+                                <span class="tier-desc">Balanced</span>
                             </label>
                         </div>
                         <div class="col-4">
                             <input type="radio" class="btn-check" name="tier" id="tier_prem" value="premium"
                                    {% if formValues and formValues.tier == 'premium' %}checked{% endif %}>
-                            <label class="btn btn-outline-secondary w-100 py-2 small" for="tier_prem">
-                                <span class="d-block fw-bold">Premium</span>
-                                <span class="text-muted" style="font-size:0.75rem;">Lush</span>
+                            <label class="btn-tier" for="tier_prem">
+                                <span class="tier-title">Premium</span>
+                                <span class="tier-desc">Lush</span>
                             </label>
                         </div>
                     </div>
@@ -498,20 +596,20 @@
             <div class="card p-3 p-md-4 border-0 mb-3 shadow-sm" style="background: #edf7f0; border-radius: 12px; border-left: 5px solid #2d6a4f !important;">
                 <div class="d-flex align-items-center gap-2 mb-2">
                     <i class="bi bi-lightbulb-fill text-success fs-5"></i>
-                    <h6 class="fw-bold mb-0" style="color: #1b4332;">AI Botanical Care & Sustainability Advisory</h6>
+                    <h6 class="fw-bold mb-0" style="color: #0F2F24;">AI Botanical Care & Sustainability Advisory</h6>
                 </div>
                 <div class="row g-2 small text-secondary">
                     <div class="col-12 col-md-6">
-                        <strong>⏱️ Weekly Care Effort:</strong> {{ generatedQuote.advisory.effort }}
+                        <i class="bi bi-clock me-1 text-muted"></i><strong>Weekly Care Effort:</strong> {{ generatedQuote.advisory.effort }}
                     </div>
                     <div class="col-12 col-md-6">
-                        <strong>💧 Watering Regimen:</strong> {{ generatedQuote.advisory.watering }}
+                        <i class="bi bi-droplet me-1 text-primary"></i><strong>Watering Regimen:</strong> {{ generatedQuote.advisory.watering }}
                     </div>
                     <div class="col-12 col-md-6">
-                        <strong>☀️ Lighting Placement:</strong> {{ generatedQuote.advisory.sunlight }}
+                        <i class="bi bi-brightness-high me-1 text-warning"></i><strong>Lighting Placement:</strong> {{ generatedQuote.advisory.sunlight }}
                     </div>
                     <div class="col-12 col-md-6">
-                        <strong>🌱 Eco-Impact Contribution:</strong> {{ generatedQuote.advisory.co2Absorption }}
+                        <i class="bi bi-tree me-1 text-success"></i><strong>Eco-Impact Contribution:</strong> {{ generatedQuote.advisory.co2Absorption }}
                     </div>
                 </div>
             </div>
@@ -519,7 +617,7 @@
             <!-- Terms & Signoff Footer -->
             <div class="text-muted small pt-2 border-top d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
                 <span>* Generated dynamically by FloraFlow Algorithmic Estimator. Estimate valid for 14 calendar days.</span>
-                <span class="fw-bold" style="color: #1b4332;">FloraFlow Management</span>
+                <span class="fw-bold" style="color: #0F2F24;">FloraFlow Management</span>
             </div>
         </div>
 
@@ -529,15 +627,15 @@
             <div class="mb-3">
                 <i class="bi bi-stars" style="font-size: 3.5rem; color: #40916c;"></i>
             </div>
-            <h4 class="fw-bold" style="color: #1b4332;">Ready to Generate Your First AI Quote</h4>
+            <h4 class="fw-bold" style="color: #0F2F24;">Ready to Generate Your First AI Quote</h4>
             <p class="text-muted mx-auto" style="max-width: 500px;">
                 Fill out the project specifications on the left (Space type, area dimensions, sunlight, and desired package tier) to generate a complete digital botanical estimate.
             </p>
             <div class="d-flex flex-wrap justify-content-center gap-2 mt-2">
-                <span class="badge bg-light text-dark border p-2">🌿 Auto-Plant Density</span>
-                <span class="badge bg-light text-dark border p-2">🪴 Pot Pairing</span>
-                <span class="badge bg-light text-dark border p-2">🧾 Instant PDF Receipt</span>
-                <span class="badge bg-light text-dark border p-2">🛒 One-Click POS</span>
+                <span class="badge bg-light text-dark border p-2"><i class="bi bi-grid-3x3 me-1 text-success"></i>Auto-Plant Density</span>
+                <span class="badge bg-light text-dark border p-2"><i class="bi bi-flower1 me-1 text-success"></i>Pot Pairing</span>
+                <span class="badge bg-light text-dark border p-2"><i class="bi bi-file-earmark-pdf me-1 text-success"></i>Instant PDF Receipt</span>
+                <span class="badge bg-light text-dark border p-2"><i class="bi bi-cart-check me-1 text-success"></i>One-Click POS</span>
             </div>
         </div>
         {% endif %}
